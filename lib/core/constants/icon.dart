@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract final class AppIcons {
+abstract class AppIcons {
   // Navigation
   static const IconData home = Icons.home_outlined;
   static const IconData homeFilled = Icons.home;
