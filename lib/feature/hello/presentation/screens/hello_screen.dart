@@ -35,7 +35,7 @@ class HelloScreen extends StatelessWidget {
               CustomButton(
                 title: 'Signup',
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.register);
+                  Navigator.pushReplacementNamed(context, Routes.register);
                 },
               ),
               const SizedBox(height: 12),
@@ -44,7 +44,7 @@ class HelloScreen extends StatelessWidget {
                 height: 52,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, Routes.login);
+                    Navigator.pushReplacementNamed(context, Routes.login);
                   },
                   style: OutlinedButton.styleFrom(
                     splashFactory: NoSplash.splashFactory,

@@ -4,11 +4,11 @@ import '../theme/app_text_styles.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
-    Key? key,
+    super.key,
     required this.title,
     this.onPressed,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   final String title;
   final isLoading;
