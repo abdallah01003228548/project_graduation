@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_graduation/core/constants/app_assets.dart';
 import 'package:project_graduation/core/constants/app_routes.dart';
+import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart';
 import 'package:project_graduation/core/theme/app_text_styles.dart';
@@ -57,7 +58,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void _goToLogin() {
+  Future<void> _goToLogin() async {
+    await LocalStorageService.setFirstTimeDone();
+
+    if (!mounted) return;
+
     Navigator.pushReplacementNamed(context, AppRoutes.login);
   }
 
@@ -77,7 +82,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 itemBuilder: (context, index) => _buildPage(_pages[index]),
               ),
             ),
-
           ],
         ),
       ),
@@ -135,9 +139,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.base2x),
           _buildDots(),
-          const SizedBox(height: 64),
+          SizedBox(height: AppSpacing.base6x),
           Text(
             page.title,
             textAlign: TextAlign.center,
@@ -147,9 +151,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.base1x),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 70),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.base4x),
             child: Text(
               page.subtitle,
               textAlign: TextAlign.center,
@@ -160,8 +164,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 64),
-
+          SizedBox(height: AppSpacing.base6x),
           CustomButton(
             text: _isLastPage ? 'Get started' : 'Next',
             onPressed: _nextPage,
