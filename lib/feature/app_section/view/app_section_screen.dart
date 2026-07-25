@@ -38,7 +38,7 @@ class AppSectionScreen extends StatelessWidget {
               items: [
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/Home.svg',
+                    'assets/icons/home.svg',
                     colorFilter: ColorFilter.mode(
                       state.currentIndex == 0
                           ? AppColors.orangeLight
@@ -74,7 +74,7 @@ class AppSectionScreen extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/Group.svg',
+                    'assets/icons/account.svg',
                     colorFilter: ColorFilter.mode(
                       state.currentIndex == 3
                           ? AppColors.orangeLight
