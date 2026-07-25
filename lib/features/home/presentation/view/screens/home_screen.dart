@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_graduation/core/model/widget/product_item_card.dart';
 
-import '../../../../../core/model/item/product_item_entity.dart';
+import '/core/model/item/product_item_entity.dart';
 
-/// Home screen showing a grid of products for a category (e.g. T-shirts).
-///
-/// Currently wired to [_dummyProducts] for UI testing. Replace with a
-/// Bloc/Cubit-driven state once the data layer is connected.
+/// Home screen showing a grid of products for a category (T-shirts).
+/// Currently wired to [_dummyProducts] for UI testing. Replace with a Bloc/Cubit-driven state once the data layer is connected.
+/// no favorite because favorite is not on the backend 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Track favorites locally for now (UI-only, no persistence/backend yet).
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(
             color: Color(0xFF212121),
             fontSize: 18,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
@@ -70,6 +68,6 @@ final List<ProductItemEntity> _dummyProducts = [
     name: 'T-shirt oversize',
     description: 'Black oversize cotton t-shirt.',
     price: 199,
-    thumbnail: 'https://picsum.photos/seed/tshirt1/400/400',
+    thumbnail: 'https://media.istockphoto.com/id/483960103/photo/blank-black-t-shirt-front-with-clipping-path.jpg?s=612x612&w=0&k=20&c=d8qlXILMYhugXGw6zX7Jer2SLPrLPORfsDsfRDWc-50=',
   ),
 ];
