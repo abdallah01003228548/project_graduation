@@ -3,6 +3,7 @@ import 'package:project_graduation/core/constants/app_routes.dart';
 import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
 import 'package:project_graduation/core/theme/app_theme.dart';
 import 'package:project_graduation/feature/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:project_graduation/feature/app_section/view/app_section_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       initialRoute: isFirstTime ? AppRoutes.onboarding : AppRoutes.login,
       routes: {
