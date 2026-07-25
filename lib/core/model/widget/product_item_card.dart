@@ -99,10 +99,6 @@ class _ProductImage extends StatelessWidget {
                     ),
                   );
                 },
-                errorBuilder: (context, error, stackTrace) => const Center(
-                  child: Icon(Icons.image_not_supported_outlined,
-                      color: Colors.grey),
-                ),
               ),
             ),
           ],
