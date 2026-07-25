@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_graduation/features/home/presentation/view/screens/home_screen.dart';
 import 'package:project_graduation/feature/app_section/view/app_section_screen.dart';
 
 void main() {
@@ -13,7 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AppSectionScreen(),
+      home: const AppSectionScreen(),
+      
     );
   }
 }
