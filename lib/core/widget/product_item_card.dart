@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project_graduation/core/model/item/product_item_entity.dart';
+import 'package:project_graduation/core/theme/app_colors.dart';
+import 'package:project_graduation/core/theme/app_text_styles.dart';
+import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
 
 class ProductItemCard extends StatelessWidget {
   final ProductItemEntity product;
@@ -24,8 +26,13 @@ class ProductItemCard extends StatelessWidget {
           AspectRatio(
             aspectRatio: 1,
             child: Image.network(
-              product.thumbnail ?? '',
+              product.thumbnail,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                color: AppColors.white,
+                alignment: Alignment.center,
+                child: const Icon(Icons.image_not_supported_outlined),
+              ),
             ),
           ),
 
@@ -35,7 +42,7 @@ class ProductItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.title ?? '',
+                  product.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -47,11 +54,11 @@ class ProductItemCard extends StatelessWidget {
                 const SizedBox(height: 6),
 
                 Text(
-                  'EGP ${product.price ?? 0}',
-                  style: const TextStyle(
-                    color: Color(0xffFFB700),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                  'EGP ${product.price}',
+                  style: TextStyle(
+                    color: AppColors.orangeLight,
+                    fontSize: AppTextStyles.h3Heading.fontSize,
+                    fontWeight: AppTextStyles.h3Heading.fontWeight,
                   ),
                 ),
               ],

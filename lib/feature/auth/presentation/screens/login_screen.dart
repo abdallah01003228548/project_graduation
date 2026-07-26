@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_graduation/core/constants/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -9,8 +10,20 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Login'),
       ),
-      body: const Center(
-        child: Text('Login Screen'),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Login Screen'),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.appSection);
+              },
+              child: const Text('app screen'),
+            ),
+          ],
+        ),
       ),
     );
   }

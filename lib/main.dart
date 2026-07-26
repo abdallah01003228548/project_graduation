@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:project_graduation/feature/app_section/view/app_section_screen.dart';
+import 'package:project_graduation/core/constants/app_routes.dart';
+import 'package:project_graduation/core/di/service_locator.dart';
+import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
+import 'package:project_graduation/core/theme/app_theme.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +28,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AppSectionScreen(),
+      title: 'Graduation Project',
+      theme: AppTheme.lightTheme,
+      initialRoute:
+          isFirstTime ? AppRoutes.onboarding : AppRoutes.hello,
+      routes: AppRoutes.routes,
     );
   }
 }

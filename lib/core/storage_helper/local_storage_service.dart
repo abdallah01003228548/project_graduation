@@ -1,4 +1,6 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart' as shared_preferences;
+
+typedef SharedPreferences = shared_preferences.SharedPreferences;
 
 class LocalStorageService {
   LocalStorageService._();

@@ -45,7 +45,7 @@ class ProductItemCard extends StatelessWidget {
                       top: Radius.circular(AppDimens.cardRadius),
                     ),
                     child: Image.network(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZG4u7vQ9TfQt4iRjpl67DD70szOEiBldAkZ8njEds2g&s=10',
+                      item.thumbnail,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
                         color: AppColors.white,

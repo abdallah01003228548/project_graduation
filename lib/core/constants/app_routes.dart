@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_graduation/feature/home/presentation/view/screens/home_screen.dart';
 
 import 'package:project_graduation/feature/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:project_graduation/feature/hello/presentation/screens/hello_screen.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String appSection = '/app-section';
+  static const String home = '/home';
 
   static final Map<String, WidgetBuilder> routes = {
     onboarding: (_) => const OnboardingScreen(),
@@ -20,5 +22,6 @@ class AppRoutes {
     login: (_) => const LoginScreen(),
     register: (_) => const RegisterScreen(),
     appSection: (_) => const AppSectionScreen(),
+    home: (_) => const HomeScreen(), 
   };
 }
