@@ -1,3 +1,5 @@
+import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
+
 class ProductItemDto {
   int? id;
   String? title;
@@ -110,6 +112,15 @@ class ProductItemDto {
     data['thumbnail'] = this.thumbnail;
     return data;
   }
+  ProductItemEntity toEntity() {
+  return ProductItemEntity(
+    id: id?.toString() ?? '',
+    name: title ?? '',
+    description: description ?? '',
+    price: price ?? 0.0,
+    thumbnail: thumbnail ?? '',
+  );
+}
 }
 
 class Dimensions {

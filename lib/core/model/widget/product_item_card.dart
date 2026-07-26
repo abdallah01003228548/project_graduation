@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_graduation/core/model/item/product_item_entity.dart';
+import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
 import 'package:project_graduation/core/theme/app_dimens.dart';
 import 'package:project_graduation/core/theme/app_text_styles.dart';
