@@ -5,7 +5,7 @@ import 'package:project_graduation/core/theme/app_dimens.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart';
 import 'package:project_graduation/core/theme/app_text_styles.dart';
 
-import '/core/model/item/product_item_entity.dart';
+import '../../../domain/entities/product_item_entity.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
