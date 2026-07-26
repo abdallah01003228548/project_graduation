@@ -7,8 +7,8 @@ import 'feature/auth/presentation/screens/register_screen.dart';
 import 'package:project_graduation/core/constants/app_routes.dart';
 import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
 import 'package:project_graduation/core/theme/app_theme.dart';
+import 'package:project_graduation/feature/home/presentation/view/screens/home_screen.dart';
 import 'package:project_graduation/feature/onboarding/presentation/view/onboarding_screen.dart';
-import 'package:project_graduation/feature/app_section/view/app_section_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,10 +47,11 @@ class MyApp extends StatelessWidget {
         AppRoutes.onboarding: (context) => const OnboardingScreen(),
         AppRoutes.login: (context) => const _PlaceholderScreen(title: 'Login Screen'),
         AppRoutes.register: (context) => const _PlaceholderScreen(title: 'Register Screen'),
+        AppRoutes.homeScreen: (context) => const HomeScreen(),
       },
     );
+  } 
   }
-}
 
 class _PlaceholderScreen extends StatelessWidget {
   final String title;
@@ -60,7 +61,20 @@ class _PlaceholderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text(title)),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.homeScreen);
+              },
+              child: const Text('Go to Home Screen'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
