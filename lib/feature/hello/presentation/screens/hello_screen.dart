@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project_graduation/core/constants/app_routes.dart';
 import '../../../../core/widget/custom_button.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/constants/routes.dart';
+
 
 class HelloScreen extends StatelessWidget {
   const HelloScreen({super.key});
@@ -35,7 +36,7 @@ class HelloScreen extends StatelessWidget {
               CustomButton(
                 title: 'Signup',
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, Routes.register);
+                  Navigator.pushReplacementNamed(context, AppRoutes.appSection);
                 },
               ),
               const SizedBox(height: 12),
@@ -44,7 +45,7 @@ class HelloScreen extends StatelessWidget {
                 height: 52,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, Routes.login);
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
                   },
                   style: OutlinedButton.styleFrom(
                     splashFactory: NoSplash.splashFactory,

@@ -63,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     if (!mounted) return;
 
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    Navigator.pushReplacementNamed(context, AppRoutes.hello);
   }
 
   @override
@@ -166,10 +166,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           SizedBox(height: AppSpacing.base6x),
           CustomButton(
-            text: _isLastPage ? 'Get started' : 'Next',
+            title: _isLastPage ? 'Get started' : 'Next',
             onPressed: _nextPage,
             height: 58,
-            fontSize: 17,
           ),
         ],
       ),
