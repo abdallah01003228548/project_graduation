@@ -9,8 +9,22 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:project_graduation/core/di/network_module.dart' as _i983;
+import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
+    as _i19;
+import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
+    as _i1009;
+import 'package:project_graduation/feature/home/domain/repo/home_repo_interface.dart'
+    as _i603;
+import 'package:project_graduation/feature/home/domain/use_case/get_categories_use_case.dart'
+    as _i192;
+import 'package:project_graduation/feature/home/domain/use_case/get_products_use_case.dart'
+    as _i313;
+import 'package:project_graduation/feature/home/presentation/view_model/home/home_cubit.dart'
+    as _i1002;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -18,7 +32,29 @@ extension GetItInjectableX on _i174.GetIt {
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
   }) {
-    _i526.GetItHelper(this, environment, environmentFilter);
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final networkModule = _$NetworkModule();
+    gh.lazySingleton<_i361.Dio>(() => networkModule.provideDio());
+    gh.factory<_i19.HomeRemoteDataSource>(
+      () => _i19.HomeRemoteDataSourceImp(gh<_i361.Dio>()),
+    );
+    gh.factory<_i603.HomeRepository>(
+      () => _i1009.HomeRepoImp(gh<_i19.HomeRemoteDataSource>()),
+    );
+    gh.factory<_i313.GetProductsUseCase>(
+      () => _i313.GetProductsUseCase(gh<_i603.HomeRepository>()),
+    );
+    gh.factory<_i192.GetCategoriesUseCase>(
+      () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
+    );
+    gh.factory<_i1002.HomeCubit>(
+      () => _i1002.HomeCubit(
+        gh<_i192.GetCategoriesUseCase>(),
+        gh<_i313.GetProductsUseCase>(),
+      ),
+    );
     return this;
   }
 }
+
+class _$NetworkModule extends _i983.NetworkModule {}

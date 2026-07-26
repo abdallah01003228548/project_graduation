@@ -19,6 +19,7 @@ class AppTheme {
 
     scaffoldBackgroundColor: AppColors.offWhite,
 
+
     textTheme: const TextTheme(
       headlineLarge: AppTextStyles.h2Heading,
       headlineMedium: AppTextStyles.h3Heading,
