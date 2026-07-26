@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
 import 'package:project_graduation/feature/home/data/dto/category_dto.dart';
-import 'package:project_graduation/feature/home/data/dto/product_item_dto.dart';
-import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source.dart';
+import 'package:project_graduation/core/model/item/product_item_dto.dart';
+import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart';
 import 'package:project_graduation/feature/home/domain/entities/category_entity.dart';
 import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
 import 'package:project_graduation/feature/home/domain/repo/home_repo_interface.dart';

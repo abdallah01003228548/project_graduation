@@ -13,7 +13,7 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:project_graduation/core/di/network_module.dart' as _i983;
-import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source.dart'
+import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
     as _i19;
 import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
     as _i1009;
