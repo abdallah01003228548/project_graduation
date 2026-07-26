@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'core/theme/app_theme.dart';
+import 'core/constants/routes.dart';
+import 'feature/hello/presentation/screens/hello_screen.dart';
+import 'feature/auth/presentation/screens/login_screen.dart';
+import 'feature/auth/presentation/screens/register_screen.dart';
 import 'package:project_graduation/core/constants/app_routes.dart';
 import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
 import 'package:project_graduation/core/theme/app_theme.dart';
@@ -21,6 +26,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Graduation Project',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+
+
+      initialRoute: Routes.hello,
+      routes: {
+        Routes.hello: (context) =>  const HelloScreen(),
+        Routes.login: (context) => const LoginScreen(),
+        Routes.register: (context)  => const RegisterScreen(),
+      },
+    );
+  }
+}
+
       theme: AppTheme.lightTheme,
       initialRoute: isFirstTime ? AppRoutes.onboarding : AppRoutes.login,
       routes: {
