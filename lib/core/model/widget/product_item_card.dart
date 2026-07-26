@@ -1,104 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:project_graduation/core/model/item/product_item_entity.dart';
+import 'package:project_graduation/core/theme/app_colors.dart';
+import 'package:project_graduation/core/theme/app_dimens.dart';
+import 'package:project_graduation/core/theme/app_text_styles.dart';
 
 
 class ProductItemCard extends StatelessWidget {
   const ProductItemCard({
     super.key,
     required this.item,
-
     this.currency = 'EGP',
+    this.onTap,
+   required this.onFavoriteTap,
+   required this.isFavorite,
   });
 
+
   final ProductItemEntity item;
+  final bool isFavorite;
   final String currency;
+    final VoidCallback? onTap;
+  final VoidCallback? onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _ProductImage(
-            imageUrl: item.thumbnail,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            item.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF000000),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text.rich(
-            TextSpan(
+    return  InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppDimens.cardRadius),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppDimens.cardRadius),
+          border: Border.all(color: AppColors.lightGray),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                TextSpan(
-                  text: '$currency ',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFFE8A33D),
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(AppDimens.cardRadius),
+                    ),
+                    child: Image.network(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZG4u7vQ9TfQt4iRjpl67DD70szOEiBldAkZ8njEds2g&s=10',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: AppColors.white,
+                        child: const Icon(Icons.image_not_supported_outlined),
+                      ),
+                    ),
                   ),
                 ),
-                TextSpan(
-                  text: _formatPrice(item.price),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFFFFB700),
+                Positioned(
+                  top: AppDimens.spaceS,
+                  right: AppDimens.spaceS,
+                  child: GestureDetector(
+                    onTap: onFavoriteTap,
+                    child: Container(
+                      width: AppDimens.favoriteButtonSize,
+                      height: AppDimens.favoriteButtonSize,
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        size: AppDimens.iconS,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatPrice(double price) {
-    return price == price.roundToDouble()
-        ? price.toInt().toString()
-        : price.toStringAsFixed(2);
-  }
-}
-
-class _ProductImage extends StatelessWidget {
-  const _ProductImage({
-    required this.imageUrl,
-  });
-
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Container(
-              color: const Color(0xFFFCFCFC),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  );
-                },
+            Padding(
+              padding: const EdgeInsets.all(AppDimens.spaceM),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppDimens.spaceXS),
+                  Row(
+                    children: [
+                      Text(currency, style: AppTextStyles.bodyMedium),
+                      Text(
+                        item.price.toStringAsFixed(0),
+                        style: AppTextStyles.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
@@ -107,3 +105,4 @@ class _ProductImage extends StatelessWidget {
     );
   }
 }
+      
