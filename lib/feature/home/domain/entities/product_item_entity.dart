@@ -4,6 +4,7 @@ class ProductItemEntity {
   final String description;
   final double price;
   final String thumbnail;
+  final String category;
 
   ProductItemEntity({
     required this.id,
@@ -11,5 +12,6 @@ class ProductItemEntity {
     required this.description,
     required this.price,
     required this.thumbnail,
+    required this.category,
   });
 }

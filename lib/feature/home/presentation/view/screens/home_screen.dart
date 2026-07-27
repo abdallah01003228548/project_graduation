@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_graduation/core/di/service_locator.dart'; // adjust to your actual serviceLocator import
+import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart';
 import 'package:project_graduation/feature/home/presentation/view/widget/home_category_tabs_widget.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _favoriteIds = {};
-  String? _selectedCategory;
+  String _selectedCategory = 'All';
 
   void _toggleFavorite(String productId) {
     setState(() {
@@ -56,9 +56,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent(HomeSuccess state) {
-    final categoryNames = state.categories.map((category) => category.name).toList();
-
-    _selectedCategory ??= categoryNames.isNotEmpty ? categoryNames.first : null;
+    final categoryNames = <String>['All', ...state.categories];
+    final selectedCategory = categoryNames.contains(_selectedCategory)
+        ? _selectedCategory
+        : 'All';
+    final filteredProducts = selectedCategory == 'All'
+        ? state.products
+        : state.products
+              .where((product) => product.category == selectedCategory)
+              .toList();
 
     return CustomScrollView(
       slivers: [
@@ -73,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 HomeCategoryTabs(
                   categories: categoryNames,
-                  selectedCategory: _selectedCategory ?? '',
+                  selectedCategory: selectedCategory,
                   onCategorySelected: (category) {
                     setState(() => _selectedCategory = category);
                   },
@@ -84,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         HomeProductGrid(
-          products: state.products,
+          products: filteredProducts,
           favoriteIds: _favoriteIds,
           onFavoriteTap: _toggleFavorite,
         ),
