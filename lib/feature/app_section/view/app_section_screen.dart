@@ -12,12 +12,22 @@ import 'package:project_graduation/core/theme/app_colors.dart';
 class AppSectionScreen extends StatelessWidget {
   const AppSectionScreen({super.key});
 
+
   static const List<Widget> _screens = [
     HomeScreen(),
     CartScreen(),
     FavouriteScreen(),
     AccountScreen(),
   ];
+
+  static const List<String> _iconPaths = [
+    'assets/icons/Home.svg',
+    'assets/icons/cart.svg',
+    'assets/icons/favourite.svg',
+    'assets/icons/account.svg',
+  ];
+
+  static const List<String> _labels = ['Home', 'Cart', 'Favourite', 'Account'];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +36,10 @@ class AppSectionScreen extends StatelessWidget {
       child: BlocBuilder<AppSectionCubit, AppSectionState>(
         builder: (context, state) {
           return Scaffold(
-            body: _screens[state.currentIndex],
+            body: IndexedStack(
+              index: state.currentIndex,
+              children: _screens,
+            ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.currentIndex,
               selectedItemColor: AppColors.orangeLight,
@@ -35,56 +48,21 @@ class AppSectionScreen extends StatelessWidget {
                 context.read<AppSectionCubit>().changeIndex(index);
               },
               type: BottomNavigationBarType.fixed,
-              items: [
-                BottomNavigationBarItem(
+              items: List.generate(_screens.length, (index) {
+                final isSelected = state.currentIndex == index;
+                return BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/home.svg',
+                    _iconPaths[index],
                     colorFilter: ColorFilter.mode(
-                      state.currentIndex == 0
+                      isSelected
                           ? AppColors.orangeLight
                           : const Color(0xFF5C5C5C),
                       BlendMode.srcIn,
                     ),
                   ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    'assets/icons/cart.svg',
-                    colorFilter: ColorFilter.mode(
-                      state.currentIndex == 1
-                          ? AppColors.orangeLight
-                          : const Color(0xFF5C5C5C),
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: 'Cart',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    'assets/icons/favourite.svg',
-                    colorFilter: ColorFilter.mode(
-                      state.currentIndex == 2
-                          ? AppColors.orangeLight
-                          : const Color(0xFF5C5C5C),
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: 'Favourite',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    'assets/icons/account.svg',
-                    colorFilter: ColorFilter.mode(
-                      state.currentIndex == 3
-                          ? AppColors.orangeLight
-                          : const Color(0xFF5C5C5C),
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: 'Account',
-                ),
-              ],
+                  label: _labels[index],
+                );
+              }),
             ),
           );
         },
