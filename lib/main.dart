@@ -1,38 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:project_graduation/core/constants/app_routes.dart';
-import 'package:project_graduation/core/di/service_locator.dart';
-import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
-import 'package:project_graduation/core/theme/app_theme.dart';
+import 'package:project_graduation/feature/app_section/view/app_section_screen.dart';
 
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Save the token to local storage for testing 
-  // when the login feature is implemented, this line should be removed
-  await LocalStorageService.saveToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNjVjOTFhYTMzZDNkYjFjNjdlYmUzYyIsImlhdCI6MTc4NTA1NTUzMywiZXhwIjoxNzg3NjQ3NTMzfQ.tXY2iBqR-8n24KL9qzrDhEmhaktC91Rv6Tr4YYQjWFw');
-  await LocalStorageService.getToken();
-  configureDependencies();
-  final isFirstTime = await LocalStorageService.isFirstTime();
-
-  runApp(MyApp(isFirstTime: isFirstTime));
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool isFirstTime;
+  const MyApp({super.key});
 
-  const MyApp({
-    super.key,
-    required this.isFirstTime,
-  });
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Graduation Project',
-      theme: AppTheme.lightTheme,
-      initialRoute:
-          isFirstTime ? AppRoutes.onboarding : AppRoutes.hello,
-      routes: AppRoutes.routes,
+      home: AppSectionScreen(),
     );
   }
 }
