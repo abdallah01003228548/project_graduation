@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart';
+import 'package:project_graduation/feature/home/domain/entities/category_entity.dart';
 import 'package:project_graduation/feature/home/presentation/view/widget/home_category_tabs_widget.dart';
 import 'package:project_graduation/feature/home/presentation/view/widget/home_greeting_widget.dart';
 import 'package:project_graduation/feature/home/presentation/view/widget/home_product_grid_widget.dart';
@@ -56,15 +57,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent(HomeSuccess state) {
-    final categoryNames = <String>['All', ...state.categories];
-    final selectedCategory = categoryNames.contains(_selectedCategory)
+    final categoryNames = <CategoryEntity>[
+      CategoryEntity(name: 'All', slug: '', image: ''),
+      ...state.categories
+          .map((c) => c is CategoryEntity
+              ? c as CategoryEntity
+              : CategoryEntity(name: c.toString(), slug: '', image: ''))
+          .toList(),
+    ];
+    final selectedCategory = categoryNames.any(
+          (category) => category.name == _selectedCategory,
+        )
         ? _selectedCategory
         : 'All';
     final filteredProducts = selectedCategory == 'All'
         ? state.products
         : state.products
-              .where((product) => product.category == selectedCategory)
-              .toList();
+            .where((product) => product.category == selectedCategory)
+            .toList();
 
     return CustomScrollView(
       slivers: [
@@ -84,16 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       _selectedCategory = category.name;
                     });
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ProductsByCategoryScreen(
-                          slug: category.slug,
-                          categoryName: category.name,
-                        ),
-                      ),
-                    );
                   },
                 ),
                 const SizedBox(height: 16),

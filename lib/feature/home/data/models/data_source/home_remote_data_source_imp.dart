@@ -23,7 +23,13 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
   @override
   Future<ResultApi<List<ProductItemDto>>> getProducts() async {
     try {
-      final response = await dio.get('/home/products');
+      final response = await dio.get(
+        '/home/products',
+        queryParameters: {
+          'skip': 0,
+          'limit': 1000,
+        },
+      );
 
       final List<dynamic> list = response.data['list'];
 
@@ -82,7 +88,7 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
         '/home/products/category/$slug',
         queryParameters: {
           'skip': 0,
-          'limit': 5,
+          'limit': 1000,
         },
       );
 

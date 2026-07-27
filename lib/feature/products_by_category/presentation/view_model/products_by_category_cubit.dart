@@ -18,15 +18,15 @@ class ProductsByCategoryCubit extends Cubit<ProductsByCategoryState> {
 
     final result = await _useCase.invoke(slug);
 
+    if (isClosed) return;
+
     if (result is Success<List<ProductItemEntity>>) {
       if (result.data.isEmpty) {
         emit(ProductsByCategoryEmpty());
       } else {
         emit(ProductsByCategorySuccess(result.data));
       }
-    }
-
-    if (result is Error<List<ProductItemEntity>>) {
+    } else if (result is Error<List<ProductItemEntity>>) {
       emit(ProductsByCategoryError(result.messageError));
     }
   }
