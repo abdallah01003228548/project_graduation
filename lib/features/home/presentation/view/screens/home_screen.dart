@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
             description: 'This is a sample product description.',
             price: 99.99,
             thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEA3G12SrovhHRKSoXRWMgDwgVfl9UbIjKRvzsem81EQ&s=10',
+            category: 'Sample Category',
           ),
         ),
       ),

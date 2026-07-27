@@ -8,13 +8,10 @@ class HomeInitial extends HomeState {}
 class HomeLoading extends HomeState {}
 
 class HomeSuccess extends HomeState {
-  final List<CategoryEntity> categories;
+  final List<String> categories;
   final List<ProductItemEntity> products;
 
-  HomeSuccess({
-    required this.categories,
-    required this.products,
-  });
+  HomeSuccess({required this.categories, required this.products});
 }
 
 class HomeError extends HomeState {
@@ -22,4 +19,3 @@ class HomeError extends HomeState {
 
   HomeError(this.messageError);
 }
-
