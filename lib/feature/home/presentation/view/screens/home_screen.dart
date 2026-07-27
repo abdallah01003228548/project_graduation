@@ -81,7 +81,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   categories: categoryNames,
                   selectedCategory: selectedCategory,
                   onCategorySelected: (category) {
-                    setState(() => _selectedCategory = category);
+                    setState(() {
+                      _selectedCategory = category.name;
+                    });
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductsByCategoryScreen(
+                          slug: category.slug,
+                          categoryName: category.name,
+                        ),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 16),

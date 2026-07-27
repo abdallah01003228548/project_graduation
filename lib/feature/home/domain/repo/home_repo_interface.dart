@@ -6,4 +6,8 @@ abstract interface class HomeRepository {
   Future<ResultApi<List<CategoryEntity>>> getCategories();
 
   Future<ResultApi<List<ProductItemEntity>>> getProducts();
+
+  Future<ResultApi<List<ProductItemEntity>>> getProductsByCategory(
+      String slug,
+      );
 }

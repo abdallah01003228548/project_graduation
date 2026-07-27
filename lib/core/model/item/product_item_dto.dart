@@ -54,9 +54,10 @@ class ProductItemDto {
     title = json['title'];
     description = json['description'];
     category = json['category'];
-    price = json['price'];
-    discountPercentage = json['discountPercentage'];
-    rating = json['rating'];
+    price = (json['price'] as num?)?.toDouble();
+    discountPercentage =
+        (json['discountPercentage'] as num?)?.toDouble();
+    rating = (json['rating'] as num?)?.toDouble();
     stock = json['stock'];
     tags = json['tags'].cast<String>();
     brand = json['brand'];
@@ -134,9 +135,9 @@ class Dimensions {
   Dimensions({this.width, this.height, this.depth});
 
   Dimensions.fromJson(Map<String, dynamic> json) {
-    width = json['width'];
-    height = json['height'];
-    depth = json['depth'];
+    width = (json['width'] as num?)?.toDouble();
+    height = (json['height'] as num?)?.toDouble();
+    depth = (json['depth'] as num?)?.toDouble();
   }
 
   Map<String, dynamic> toJson() {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
-
+import 'package:project_graduation/feature/home/domain/entities/category_entity.dart';
 
 class HomeCategoryTabs extends StatelessWidget {
-  final List<String> categories;
+  final List<CategoryEntity> categories;
   final String selectedCategory;
-  final ValueChanged<String> onCategorySelected;
+  final ValueChanged<CategoryEntity> onCategorySelected;
 
   const HomeCategoryTabs({
     super.key,
@@ -24,22 +24,24 @@ class HomeCategoryTabs extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final category = categories[index];
-          final isSelected = category == selectedCategory;
+          final isSelected = category.name == selectedCategory;
 
           return ChoiceChip(
-            label: Text(category),
+            label: Text(category.name),
             selected: isSelected,
             onSelected: (_) => onCategorySelected(category),
-            labelStyle: (Theme.of(context).textTheme.bodyMedium ?? const TextStyle())
+            labelStyle:
+            (Theme.of(context).textTheme.bodyMedium ?? const TextStyle())
                 .copyWith(
-                  color: isSelected ? Colors.white : null,
-                ),
+              color: isSelected ? Colors.white : null,
+            ),
             selectedColor: AppColors.orangeLight,
             backgroundColor: AppColors.background,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
               side: BorderSide(
-                color: isSelected ? AppColors.orangeLight : AppColors.lightGray,
+                color:
+                isSelected ? AppColors.orangeLight : AppColors.lightGray,
               ),
             ),
           );

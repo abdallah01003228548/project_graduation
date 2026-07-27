@@ -43,4 +43,24 @@ class HomeRepoImp implements HomeRepository {
     }
     return Error('Unknown error');
   }
+  @override
+  Future<ResultApi<List<ProductItemEntity>>> getProductsByCategory(
+      String slug,
+      ) async {
+    final result = await _remoteDataSource.getProductsByCategory(slug);
+
+    if (result is Success<List<ProductItemDto>>) {
+      final entities = result.data
+          .map((dto) => dto.toEntity())
+          .toList();
+
+      return Success(entities);
+    }
+
+    if (result is Error<List<ProductItemDto>>) {
+      return Error(result.messageError);
+    }
+
+    return Error('Unknown error');
+  }
 }
