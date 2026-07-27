@@ -49,7 +49,7 @@ class CategoryItemDto {
   }
   CategoryEntity toEntity() {
     return CategoryEntity(
-      id: int.tryParse(slug ?? '') ?? 0,
+      slug: slug ?? '',
       name: name ?? '',
       image: image ?? '',
     );

@@ -8,6 +8,10 @@ abstract interface class HomeRemoteDataSource {
   Future<ResultApi<List<ProductItemDto>>> getProducts();
 
   Future<ResultApi<List<CategoryItemDto>>> getCategories();
+
+  Future<ResultApi<List<ProductItemDto>>> getProductsByCategory(
+      String slug,
+      );
 }
 
 @Injectable(as: HomeRemoteDataSource)
@@ -64,6 +68,40 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
         e.response?.data?['message']?.toString() ??
             e.message ??
             'Failed to fetch categories',
+      );
+    } catch (e) {
+      return Error(e.toString());
+    }
+  }
+  @override
+  Future<ResultApi<List<ProductItemDto>>> getProductsByCategory(
+      String slug,
+      ) async {
+    try {
+      final response = await dio.get(
+        '/home/products/category/$slug',
+        queryParameters: {
+          'skip': 0,
+          'limit': 5,
+        },
+      );
+
+      final List<dynamic> list = response.data['list'];
+
+      final products = list
+          .map(
+            (json) => ProductItemDto.fromJson(
+          json as Map<String, dynamic>,
+        ),
+      )
+          .toList();
+
+      return Success(products);
+    } on DioException catch (e) {
+      return Error(
+        e.response?.data?['message']?.toString() ??
+            e.message ??
+            'Failed to fetch products',
       );
     } catch (e) {
       return Error(e.toString());

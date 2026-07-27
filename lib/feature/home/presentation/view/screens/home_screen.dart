@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_graduation/feature/products_by_category/presentation/view/products_by_category_screen.dart';
 import 'package:project_graduation/core/di/service_locator.dart'; // adjust to your actual serviceLocator import
 import 'package:project_graduation/core/theme/app_colors.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart';
@@ -56,9 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent(HomeSuccess state) {
-    final categoryNames = state.categories.map((category) => category.name).toList();
-
-    _selectedCategory ??= categoryNames.isNotEmpty ? categoryNames.first : null;
+    _selectedCategory ??=
+    state.categories.isNotEmpty ? state.categories.first.name : null;
 
     return CustomScrollView(
       slivers: [
@@ -72,10 +72,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 const HomeGreetingHeader(),
                 const SizedBox(height: 20),
                 HomeCategoryTabs(
-                  categories: categoryNames,
+                  categories: state.categories,
                   selectedCategory: _selectedCategory ?? '',
                   onCategorySelected: (category) {
-                    setState(() => _selectedCategory = category);
+                    setState(() {
+                      _selectedCategory = category.name;
+                    });
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductsByCategoryScreen(
+                          slug: category.slug,
+                          categoryName: category.name,
+                        ),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 16),

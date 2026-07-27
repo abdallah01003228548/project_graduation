@@ -5,4 +5,7 @@ import 'package:project_graduation/core/model/item/product_item_dto.dart';
 abstract interface class HomeRemoteDataSource {
    Future<ResultApi<List<ProductItemDto>>> getProducts();
    Future<ResultApi<List<CategoryItemDto>>> getCategories();
+   Future<ResultApi<List<ProductItemDto>>> getProductsByCategory(
+       String slug,
+       );
  }
