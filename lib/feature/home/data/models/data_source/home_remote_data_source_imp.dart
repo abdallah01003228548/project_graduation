@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:project_graduation/core/di/network_module.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
 import 'package:project_graduation/feature/home/data/dto/category_dto.dart';
 import 'package:project_graduation/core/model/item/product_item_dto.dart';
@@ -16,14 +17,14 @@ abstract interface class HomeRemoteDataSource {
 
 @Injectable(as: HomeRemoteDataSource)
 class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
-  final Dio dio;
+  final NetworkModule networkModule;
 
-  HomeRemoteDataSourceImp(this.dio);
+  HomeRemoteDataSourceImp(this.networkModule);
 
   @override
   Future<ResultApi<List<ProductItemDto>>> getProducts() async {
     try {
-      final response = await dio.get(
+      final response = await networkModule.get(
         '/home/products',
         queryParameters: {
           'skip': 0,
@@ -56,7 +57,7 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
   @override
   Future<ResultApi<List<CategoryItemDto>>> getCategories() async {
     try {
-      final response = await dio.get('/home/categories');
+      final response = await networkModule.get('/home/categories');
 
       final List<dynamic> list = response.data['list'];
 
@@ -84,7 +85,7 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
       String slug,
       ) async {
     try {
-      final response = await dio.get(
+      final response = await networkModule.get(
         '/home/products/category/$slug',
         queryParameters: {
           'skip': 0,

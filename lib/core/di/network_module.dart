@@ -3,32 +3,75 @@ import 'package:injectable/injectable.dart';
 import 'package:project_graduation/core/network/api/api_constants.dart';
 import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
 
-@module
-abstract class NetworkModule {
-  @lazySingleton
-  Dio provideDio() {
-    final dio = Dio(
+@lazySingleton
+class NetworkModule {
+  late final Dio _dio;
+
+  NetworkModule() {
+    _dio = Dio(
       BaseOptions(
         baseUrl: ApiConstants.baseUrl,
       ),
     );
 
-    dio.interceptors.add(
+    _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await LocalStorageService.getToken();
-
 
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
 
-
           handler.next(options);
         },
       ),
     );
+  }
 
-    return dio;
+  Future<Response<dynamic>> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _dio.get(
+      path,
+      queryParameters: queryParameters,
+    );
+  }
+
+  Future<Response<dynamic>> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _dio.post(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+    );
+  }
+
+  Future<Response<dynamic>> put(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _dio.put(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+    );
+  }
+
+  Future<Response<dynamic>> delete(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _dio.delete(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+    );
   }
 }
