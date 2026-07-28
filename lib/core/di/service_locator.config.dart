@@ -32,6 +32,18 @@ import 'package:project_graduation/feature/products_by_category/domain/use_case/
     as _i551;
 import 'package:project_graduation/feature/products_by_category/presentation/view_model/products_by_category_cubit.dart'
     as _i72;
+import 'package:project_graduation/feature/search/data/data_source/search_remote_data_source.dart'
+    as _i587;
+import 'package:project_graduation/feature/search/data/data_source/search_remote_data_source_imp.dart'
+    as _i803;
+import 'package:project_graduation/feature/search/data/repo/search_repo_imp.dart'
+    as _i545;
+import 'package:project_graduation/feature/search/domain/repo/search_repo_interface.dart'
+    as _i293;
+import 'package:project_graduation/feature/search/domain/use_case/search_products_use_case.dart'
+    as _i422;
+import 'package:project_graduation/feature/search/presentation/view_model/search_cubit.dart'
+    as _i1047;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -41,9 +53,14 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i983.NetworkModule>(() => _i983.NetworkModule());
+    gh.factory<_i587.SearchRemoteDataSource>(
+      () => _i803.SearchRemoteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
+    gh.factory<_i293.SearchRepoInterface>(
+      () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
     gh.factory<_i348.RegisterUseCase>(
       () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
     );
@@ -52,6 +69,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i192.GetCategoriesUseCase>(
       () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
+    );
+    gh.factory<_i422.SearchProductsUseCase>(
+      () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
+    );
+    gh.factory<_i1047.SearchCubit>(
+      () => _i1047.SearchCubit(gh<_i422.SearchProductsUseCase>()),
     );
     gh.factory<_i313.GetProductsUseCase>(
       () => _i313.GetProductsUseCase(gh<_i603.HomeRepository>()),
