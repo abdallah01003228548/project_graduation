@@ -12,6 +12,10 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:project_graduation/core/di/network_module.dart' as _i983;
+import 'package:project_graduation/feature/auth/domain/repo/auth_repo_interface.dart'
+    as _i405;
+import 'package:project_graduation/feature/auth/domain/use_case/register_use_case.dart'
+    as _i348;
 import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
     as _i947;
 import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
@@ -57,6 +61,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i293.SearchRepoInterface>(
       () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
+    gh.factory<_i348.RegisterUseCase>(
+      () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
     );
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
