@@ -13,6 +13,7 @@ class CustomButton extends StatelessWidget {
     this.borderColor,
     this.width = double.infinity,
     this.height = 52,
+    this.fontSize = 16,
   });
 
   final String title;
@@ -25,6 +26,7 @@ class CustomButton extends StatelessWidget {
 
   final double width;
   final double height;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +67,7 @@ class CustomButton extends StatelessWidget {
                 title,
                 style: AppTextStyles.buttonText.copyWith(
                   color: textColor ?? AppColors.white,
+                  fontSize: fontSize,
                 ),
               ),
       ),
