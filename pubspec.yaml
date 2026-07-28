@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.3.3
   flutter_svg: ^2.3.0
   toastification: ^3.2.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
