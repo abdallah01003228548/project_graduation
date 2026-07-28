@@ -55,8 +55,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
-    gh.factory<_i348.RegisterUseCase>(
-      () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
+    gh.factory<_i293.SearchRepoInterface>(
+      () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
     );
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
