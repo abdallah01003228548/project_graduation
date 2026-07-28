@@ -1,5 +1,5 @@
 import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
-
+import 'package:project_graduation/feature/home/domain/entities/reviews_entity.dart';
 class ProductItemDto {
   int? id;
   String? title;
@@ -59,7 +59,9 @@ class ProductItemDto {
         (json['discountPercentage'] as num?)?.toDouble();
     rating = (json['rating'] as num?)?.toDouble();
     stock = json['stock'];
-    tags = json['tags'].cast<String>();
+    tags = (json['tags'] as List?)
+        ?.map((e) => e.toString())
+        .toList();
     brand = json['brand'];
     sku = json['sku'];
     weight = json['weight'];
@@ -78,7 +80,9 @@ class ProductItemDto {
     returnPolicy = json['returnPolicy'];
     minimumOrderQuantity = json['minimumOrderQuantity'];
     meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
-    images = json['images'].cast<String>();
+    images = (json['images'] as List?)
+        ?.map((e) => e.toString())
+        .toList();
     thumbnail = json['thumbnail'];
   }
 
@@ -123,6 +127,17 @@ class ProductItemDto {
       price: price ?? 0.0,
       thumbnail: thumbnail ?? '',
       category: category ?? '',
+      images: images ?? [],
+      discountPercentage: discountPercentage ?? 0.0,
+      rating: rating ?? 0.0,
+      reviews: reviews?.map((e) {
+        return ReviewsEntity(
+          rating: e.rating ?? 0,
+          comment: e.comment ?? '',
+          date: e.date ?? '',
+          reviewerName: e.reviewerName ?? '',
+        );
+      }).toList() ?? [],
     );
   }
 }

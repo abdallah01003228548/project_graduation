@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_graduation/feature/product_details/presentation/view/screens/product_details_screen.dart';
 import 'package:project_graduation/core/model/widget/product_item_card.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart'; // adjust import path to your existing ProductItemCard
 import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
@@ -28,10 +29,21 @@ class HomeProductGrid extends StatelessWidget {
         ),
         delegate: SliverChildBuilderDelegate((context, index) {
           final item = products[index];
+
           return ProductItemCard(
             item: item,
             isFavorite: favoriteIds.contains(item.id),
             onFavoriteTap: () => onFavoriteTap(item.id),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductDetailsScreen(
+                    product: item,
+                  ),
+                ),
+              );
+            },
           );
         }, childCount: products.length),
       ),

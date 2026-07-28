@@ -58,7 +58,8 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
   Future<ResultApi<List<CategoryItemDto>>> getCategories() async {
     try {
       final response = await networkModule.get('/home/categories');
-
+      print(response.data);
+      print(response.data.runtimeType);
       final List<dynamic> list = response.data['list'];
 
       final categories = list
