@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -13,14 +14,17 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
 
   AccountRemoteDataSourceImp(this.networkModule);
 
+  // ─── Get Profile ──────────────────────────────────────────────────────────
+
   @override
   Future<ResultApi<AccountDto>> getProfile() async {
     try {
       final response = await networkModule.get(ApiConstants.getProfile);
-      
-      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+
+      final Map<String, dynamic> responseData =
+          response.data as Map<String, dynamic>;
       final accountDto = AccountDto.fromJson(responseData);
-      
+
       return Success(accountDto);
     } on DioException catch (e) {
       return Error(
@@ -33,6 +37,8 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
     }
   }
 
+  // ─── Update Profile ───────────────────────────────────────────────────────
+
   @override
   Future<ResultApi<AccountDto>> updateProfile({
     required String name,
@@ -41,31 +47,34 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
     File? imageFile,
   }) async {
     try {
-      final Map<String, dynamic> dataMap = {
+      // ── بناء الـ JSON body ──────────────────────────────────────────────
+      final Map<String, dynamic> jsonBody = {
         'name': name,
         'email': email,
       };
 
       if (password != null && password.isNotEmpty) {
-        dataMap['password'] = password;
+        jsonBody['password'] = password;
       }
 
+      // ── تحويل الصورة لـ Base64 وإضافتها للـ JSON ───────────────────────
       if (imageFile != null) {
-        final String fileName = imageFile.path.split('/').last;
-        dataMap['image'] = await MultipartFile.fromFile(
-          imageFile.path,
-          filename: fileName,
-        );
-      }
+        final bytes = await imageFile.readAsBytes();
+        final base64Image = base64Encode(bytes);
 
-      final formData = FormData.fromMap(dataMap);
+        final extension = imageFile.path.split('.').last.toLowerCase();
+        final mimeType = _getMimeType(extension);
+
+        jsonBody['image'] = 'data:$mimeType;base64,$base64Image';
+      }
 
       final response = await networkModule.post(
         ApiConstants.updateProfile,
-        data: formData,
+        data: jsonBody,
       );
 
-      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      final Map<String, dynamic> responseData =
+          response.data as Map<String, dynamic>;
       final accountDto = AccountDto.fromJson(responseData);
 
       return Success(accountDto);
@@ -77,6 +86,25 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
       );
     } catch (e) {
       return Error(e.toString());
+    }
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
+
+  /// إرجاع الـ MIME type بناءً على امتداد الملف
+  String _getMimeType(String extension) {
+    switch (extension) {
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      case 'gif':
+        return 'image/gif';
+      case 'webp':
+        return 'image/webp';
+      default:
+        return 'image/jpeg';
     }
   }
 }
