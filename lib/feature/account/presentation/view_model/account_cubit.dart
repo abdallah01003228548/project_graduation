@@ -28,10 +28,26 @@ class AccountCubit extends Cubit<AccountState> {
     emit(AccountLoading());
     final result = await _getAccountUseCase.invoke();
     if (result is Success<AccountEntity>) {
-      currentAccount = result.data;
-      emit(AccountLoaded(result.data));
+      if (result.data.name.isEmpty && result.data.email.isEmpty) {
+        currentAccount = null;
+        emit(AccountEmpty());
+      } else {
+        currentAccount = result.data;
+        emit(AccountLoaded(result.data));
+      }
     } else if (result is Error<AccountEntity>) {
-      emit(AccountError(result.messageError));
+      final errorMsg = result.messageError.toLowerCase();
+      if (errorMsg.contains('not found') ||
+          errorMsg.contains('no profile') ||
+          errorMsg.contains('no portfolio') ||
+          errorMsg.contains('empty') ||
+          errorMsg.contains('not exist') ||
+          errorMsg.contains('404')) {
+        currentAccount = null;
+        emit(AccountEmpty());
+      } else {
+        emit(AccountError(result.messageError));
+      }
     }
   }
 

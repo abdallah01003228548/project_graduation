@@ -11,6 +11,8 @@ class AccountLoaded extends AccountState {
   AccountLoaded(this.account);
 }
 
+class AccountEmpty extends AccountState {}
+
 class AccountUpdating extends AccountState {}
 
 class AccountUpdateSuccess extends AccountState {

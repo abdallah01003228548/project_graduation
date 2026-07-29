@@ -83,6 +83,13 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
 
+              // ── Empty State (No Profile) ─────────────────────────────────
+              if (state is AccountEmpty) {
+                return _AccountEmptyContent(
+                  onCreatePressed: () => _openEditProfile(context),
+                );
+              }
+
               // ── Error ────────────────────────────────────────────────────
               if (state is AccountError) {
                 return Center(
@@ -276,6 +283,76 @@ class _AccountContent extends StatelessWidget {
           readOnly: true,
         ),
       ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Account Empty Content (shown when no profile has been created yet)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AccountEmptyContent extends StatelessWidget {
+  final VoidCallback onCreatePressed;
+
+  const _AccountEmptyContent({required this.onCreatePressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.base3x,
+        vertical: AppSpacing.base4x,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: AppSpacing.base6x),
+
+          // Default Profile Image / Avatar
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromRGBO(0, 0, 0, 0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const CircleAvatar(
+                radius: 56,
+                backgroundColor: AppColors.lightGray,
+                child: Icon(
+                  Icons.person,
+                  size: 56,
+                  color: AppColors.textGrey,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.base4x),
+
+          Text(
+            "You haven't created your profile yet.",
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.charcoal,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.base6x),
+
+          CustomButton(
+            title: 'Create Profile',
+            backgroundColor: AppColors.primaryGreen,
+            onPressed: onCreatePressed,
+          ),
+        ],
+      ),
     );
   }
 }
