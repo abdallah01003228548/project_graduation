@@ -1,0 +1,82 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import 'package:project_graduation/core/di/network_module.dart';
+import 'package:project_graduation/core/network/api/api_constants.dart';
+import 'package:project_graduation/core/network/api/result_api.dart';
+import 'package:project_graduation/feature/account/data/data_source/account_remote_data_source.dart';
+import 'package:project_graduation/feature/account/data/model/account_dto.dart';
+
+@Injectable(as: AccountRemoteDataSource)
+class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
+  final NetworkModule networkModule;
+
+  AccountRemoteDataSourceImp(this.networkModule);
+
+  @override
+  Future<ResultApi<AccountDto>> getProfile() async {
+    try {
+      final response = await networkModule.get(ApiConstants.getProfile);
+      
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      final accountDto = AccountDto.fromJson(responseData);
+      
+      return Success(accountDto);
+    } on DioException catch (e) {
+      return Error(
+        e.response?.data?['message']?.toString() ??
+            e.message ??
+            'Failed to get profile data',
+      );
+    } catch (e) {
+      return Error(e.toString());
+    }
+  }
+
+  @override
+  Future<ResultApi<AccountDto>> updateProfile({
+    required String name,
+    required String email,
+    String? password,
+    File? imageFile,
+  }) async {
+    try {
+      final Map<String, dynamic> dataMap = {
+        'name': name,
+        'email': email,
+      };
+
+      if (password != null && password.isNotEmpty) {
+        dataMap['password'] = password;
+      }
+
+      if (imageFile != null) {
+        final String fileName = imageFile.path.split('/').last;
+        dataMap['image'] = await MultipartFile.fromFile(
+          imageFile.path,
+          filename: fileName,
+        );
+      }
+
+      final formData = FormData.fromMap(dataMap);
+
+      final response = await networkModule.post(
+        ApiConstants.updateProfile,
+        data: formData,
+      );
+
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      final accountDto = AccountDto.fromJson(responseData);
+
+      return Success(accountDto);
+    } on DioException catch (e) {
+      return Error(
+        e.response?.data?['message']?.toString() ??
+            e.message ??
+            'Failed to update profile data',
+      );
+    } catch (e) {
+      return Error(e.toString());
+    }
+  }
+}
