@@ -15,7 +15,11 @@ class RegisterRequestDto {
     data['phone'] = this.phone;
     data['email'] = this.email;
     data['password'] = this.password;
-    data['confirmPassword'] = this.confirmPassword;
+    final passVal = (this.confirmPassword != null && this.confirmPassword!.isNotEmpty)
+        ? this.confirmPassword
+        : this.password;
+    data['rePassword'] = passVal;
+    data['confirmPassword'] = passVal;
     return data;
   }
 }

@@ -13,11 +13,16 @@ abstract class Validator {
   }
 
   static String? validatePassword(String? val) {
-    final RegExp passwordRegex = RegExp(AppKeys.passwordRegex);
     if (val == null || val.isEmpty) {
       return 'Password cannot be empty';
-    } else if (!passwordRegex.hasMatch(val)) {
-      return 'Enter a valid password';
+    } else if (val.length < 8) {
+      return 'Password must be at least 8 characters';
+    } else if (!RegExp(r'[A-Za-z]').hasMatch(val)) {
+      return 'Password must contain at least one letter';
+    } else if (!RegExp(r'[0-9]').hasMatch(val)) {
+      return 'Password must contain at least one number';
+    } else if (!RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]').hasMatch(val)) {
+      return 'Password must contain at least one special character';
     } else {
       return null;
     }
@@ -48,7 +53,7 @@ abstract class Validator {
 
     final phone = val.trim();
     final isValid = RegExp(r'^\+?\d+$').hasMatch(phone);
-    if (!isValid || phone.length != 13) {
+    if (!isValid || phone.length < 11 || phone.length > 13) {
       return 'Enter a valid phone number';
     }
 

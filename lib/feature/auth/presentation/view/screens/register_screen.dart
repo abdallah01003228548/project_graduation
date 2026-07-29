@@ -7,6 +7,7 @@ import 'package:project_graduation/core/utils/app_dialog.dart';
 import 'package:project_graduation/core/utils/app_tost.dart';
 import 'package:project_graduation/core/utils/validator_app.dart';
 import 'package:project_graduation/core/widget/custom_text_form_field.dart';
+import 'package:project_graduation/feature/auth/domain/entity/register_requiest_entitiy.dart';
 import 'package:project_graduation/feature/auth/presentation/view_model/cubit/register/register_cubit.dart';
 import 'package:toastification/toastification.dart';
 
@@ -35,50 +36,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "SignUp",
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-            color: Color(0xff1F1F1F),
+    return BlocProvider<RegisterCubit>(
+      create: (context) => serviceLocator<RegisterCubit>(),
+      child: BlocListener<RegisterCubit, RegisterState>(
+        listener: (context, state) {
+          if (state is RegisterLoading) {
+            AppDialogs.showLoadingDialog(context);
+          } else if (state is RegisterSuccess) {
+            Navigator.pop(context);
+            AppToast.showToast(
+              context: context,
+              title: "Success",
+              description: "Account created successfully!",
+              type: ToastificationType.success,
+            );
+            Navigator.pushReplacementNamed(context, AppRoutes.login);
+          } else if (state is RegisterError) {
+            Navigator.pop(context);
+            AppToast.showToast(
+              context: context,
+              title: "Error",
+              description: state.errorMessage,
+              type: ToastificationType.error,
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "SignUp",
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff1F1F1F),
+              ),
+            ),
+            centerTitle: true,
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: BlocProvider<RegisterCubit>(
-            create: (context) => serviceLocator<RegisterCubit>(),
-            child: BlocListener<RegisterCubit, RegisterState>(
-              listener: (context, state) {
-                if (state is RegisterLoading) {
-                  AppDialogs.showLoadingDialog(context);
-                } else if (state is RegisterSuccess) {
-                  Navigator.pop(context);
-                  AppToast.showToast(
-                    context: context,
-                    title: "Success",
-                    description: "Account created successfully!",
-                    type: ToastificationType.success,
-                  );
-                  Navigator.pushReplacementNamed(
-                    context,
-                    AppRoutes.login,
-                  );
-                } else if (state is RegisterError) {
-                  Navigator.pop(context);
-                  AppToast.showToast(
-                    context: context,
-                    title: "Error",
-                    description: state.errorMessage,
-                    type: ToastificationType.error,
-                  );
-                }
-              },
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -151,73 +149,90 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     action: TextInputAction.done,
                   ),
                   const SizedBox(height: 25),
-                  MaterialButton(
-                    minWidth: double.infinity,
-                    height: 50,
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          AppRoutes.appSection,
-                        );
-                      }
+                  Builder(
+                    builder: (btnContext) {
+                      return MaterialButton(
+                        minWidth: double.infinity,
+                        height: 50,
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            var cubit = BlocProvider.of<RegisterCubit>(
+                              btnContext,
+                            );
+                            cubit.intent(
+                              RegisterIntentRegister(
+                                RegisterRequestEntity(
+                                  name: nameController.text,
+                                  phone: phoneNumberController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  confirmPassword:
+                                      confirmPasswordController.text,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        color: const Color(0xff212121),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          "Sign up",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffFFFFFF),
+                          ),
+                        ),
+                      );
                     },
-                    color: const Color(0xff212121),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Text(
-                      "Sign up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xffFFFFFF),
-                      ),
-                    ),
                   ),
                 ],
               ),
             ),
           ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
-      floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
-          ? Align(
-              alignment: Alignment.bottomCenter,
-              child: Text.rich(
-                TextSpan(
-                  text: "Already have an account? ",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xff6E6A7C),
-                  ),
-                  children: [
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonAnimator:
+              FloatingActionButtonAnimator.noAnimation,
+          floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
+              ? Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text.rich(
                     TextSpan(
-                      text: "Login",
+                      text: "Already have an account? ",
                       style: const TextStyle(
                         fontSize: 14,
-                        color: Color(0xff212121),
-                        fontWeight: FontWeight.w500,
+                        color: Color(0xff6E6A7C),
                       ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          if (Navigator.canPop(context)) {
-                            Navigator.pop(context);
-                          } else {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRoutes.login,
-                            );
-                          }
-                        },
+                      children: [
+                        TextSpan(
+                          text: "Login",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xff212121),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              } else {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  AppRoutes.login,
+                                );
+                              }
+                            },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            )
-          : null,
+                  ),
+                )
+              : null,
+        ),
+      ),
     );
   }
 }
