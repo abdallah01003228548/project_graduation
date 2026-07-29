@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
-import 'package:project_graduation/core/theme/app_dimens.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart';
 import 'package:project_graduation/core/theme/app_text_styles.dart';
 import 'package:project_graduation/core/theme/custom_text_field.dart';
@@ -166,7 +165,7 @@ class _AccountContentState extends State<_AccountContent> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: const Color.fromRGBO(0, 0, 0, 0.08),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),

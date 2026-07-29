@@ -153,7 +153,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           body: SafeArea(
             child: PopScope(
               canPop: !isUpdating,
-              onPopInvoked: (didPop) {
+              onPopInvokedWithResult: (didPop, _) {
                 if (didPop) {
                   cubit.clearSelectedImage();
                 }
@@ -176,7 +176,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
+                                  color: const Color.fromRGBO(0, 0, 0, 0.08),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -209,7 +209,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.15),
+                                      color: const Color.fromRGBO(0, 0, 0, 0.15),
                                       blurRadius: 6,
                                       offset: const Offset(0, 2),
                                     ),

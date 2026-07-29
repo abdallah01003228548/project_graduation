@@ -80,4 +80,8 @@ class AccountCubit extends Cubit<AccountState> {
       }
     }
   }
+
+  void clearSelectedImage() {
+    selectedImageFile = null;
+  }
 }
