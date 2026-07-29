@@ -21,7 +21,7 @@ class AppSectionScreen extends StatelessWidget {
   ];
 
   static const List<String> _iconPaths = [
-    'assets/icons/Home.svg',
+    'assets/icons/home.svg',
     'assets/icons/cart.svg',
     'assets/icons/favourite.svg',
     'assets/icons/account.svg',
