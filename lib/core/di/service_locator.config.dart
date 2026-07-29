@@ -20,8 +20,12 @@ import 'package:project_graduation/feature/auth/domain/repo/auth_data_source.dar
     as _i192;
 import 'package:project_graduation/feature/auth/domain/repo/auth_repo_interface.dart'
     as _i405;
+import 'package:project_graduation/feature/auth/domain/use_case/login_use_case.dart'
+    as _i199;
 import 'package:project_graduation/feature/auth/domain/use_case/register_use_case.dart'
     as _i348;
+import 'package:project_graduation/feature/auth/presentation/view_model/cubit/login/login_cubit.dart'
+    as _i812;
 import 'package:project_graduation/feature/auth/presentation/view_model/cubit/register/register_cubit.dart'
     as _i60;
 import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
@@ -31,7 +35,7 @@ import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
 import 'package:project_graduation/feature/home/domain/repo/home_repo_interface.dart'
     as _i603;
 import 'package:project_graduation/feature/home/domain/use_case/get_categories_use_case.dart'
-    as _i1921;
+    as _i192;
 import 'package:project_graduation/feature/home/domain/use_case/get_products_use_case.dart'
     as _i313;
 import 'package:project_graduation/feature/home/presentation/view_model/home/home_cubit.dart'
@@ -56,8 +60,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
+    gh.factory<_i199.LoginUseCase>(
+      () => _i199.LoginUseCase(gh<_i405.AuthRepoInterface>()),
+    );
     gh.factory<_i348.RegisterUseCase>(
       () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
+    );
+    gh.factory<_i812.LoginCubit>(
+      () => _i812.LoginCubit(gh<_i199.LoginUseCase>()),
     );
     gh.factory<_i60.RegisterCubit>(
       () => _i60.RegisterCubit(gh<_i348.RegisterUseCase>()),
@@ -65,8 +75,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
     );
-    gh.factory<_i1921.GetCategoriesUseCase>(
-      () => _i1921.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
+    gh.factory<_i192.GetCategoriesUseCase>(
+      () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
     );
     gh.factory<_i313.GetProductsUseCase>(
       () => _i313.GetProductsUseCase(gh<_i603.HomeRepository>()),
@@ -76,7 +86,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1002.HomeCubit>(
       () => _i1002.HomeCubit(
-        gh<_i1921.GetCategoriesUseCase>(),
+        gh<_i192.GetCategoriesUseCase>(),
         gh<_i313.GetProductsUseCase>(),
       ),
     );
