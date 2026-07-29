@@ -93,7 +93,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i422.SearchProductsUseCase>(
       () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
     );
-    gh.factory<_i1066.AccountCubit>(
+    gh.lazySingleton<_i1066.AccountCubit>(
       () => _i1066.AccountCubit(
         gh<_i274.GetAccountUseCase>(),
         gh<_i165.UpdateAccountUseCase>(),

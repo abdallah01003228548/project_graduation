@@ -8,7 +8,7 @@ import 'package:project_graduation/feature/account/domain/use_case/get_account_u
 import 'package:project_graduation/feature/account/domain/use_case/update_account_use_case.dart';
 import 'account_state.dart';
 
-@injectable
+@lazySingleton
 class AccountCubit extends Cubit<AccountState> {
   final GetAccountUseCase _getAccountUseCase;
   final UpdateAccountUseCase _updateAccountUseCase;
