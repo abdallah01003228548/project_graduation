@@ -22,6 +22,8 @@ class AccountCubit extends Cubit<AccountState> {
     this._updateAccountUseCase,
   ) : super(AccountInitial());
 
+  // ─── Get Profile ──────────────────────────────────────────────────────────
+
   Future<void> getProfile() async {
     emit(AccountLoading());
     final result = await _getAccountUseCase.invoke();
@@ -33,13 +35,15 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
+  // ─── Update Profile ───────────────────────────────────────────────────────
+
   Future<void> updateProfile({
     required String name,
     required String email,
     String? password,
   }) async {
     emit(AccountUpdating());
-    
+
     final result = await _updateAccountUseCase.invoke(
       name: name,
       email: email,
@@ -49,16 +53,16 @@ class AccountCubit extends Cubit<AccountState> {
 
     if (result is Success<AccountEntity>) {
       currentAccount = result.data;
-      selectedImageFile = null; // Clear local selected image on success
+      selectedImageFile = null; // clear local image on success
       emit(AccountUpdateSuccess(result.data));
     } else if (result is Error<AccountEntity>) {
+      // Stay in error state — the UI listener will show a SnackBar and keep
+      // the user on the Edit screen so they can retry.
       emit(AccountError(result.messageError));
-      // Re-emit loaded so the form fields don't get stuck in error or blank state
-      if (currentAccount != null) {
-        emit(AccountLoaded(currentAccount!));
-      }
     }
   }
+
+  // ─── Image Picker ─────────────────────────────────────────────────────────
 
   Future<void> pickImage(ImageSource source) async {
     try {
@@ -68,18 +72,17 @@ class AccountCubit extends Cubit<AccountState> {
       );
       if (pickedFile != null) {
         selectedImageFile = File(pickedFile.path);
-        // If we are currently in Loaded state, re-emit loaded to refresh preview
+        // Re-emit the current loaded state so the avatar preview rebuilds.
         if (currentAccount != null) {
           emit(AccountLoaded(currentAccount!));
         }
       }
     } catch (e) {
       emit(AccountError('Failed to pick image: ${e.toString()}'));
-      if (currentAccount != null) {
-        emit(AccountLoaded(currentAccount!));
-      }
     }
   }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
 
   void clearSelectedImage() {
     selectedImageFile = null;

@@ -28,12 +28,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<AccountCubit>();
-    final account = cubit.currentAccount;
-
+    // Pre-fill with the current cached account data from the cubit.
+    final account = context.read<AccountCubit>().currentAccount;
     _nameController = TextEditingController(text: account?.name ?? '');
     _emailController = TextEditingController(text: account?.email ?? '');
-    _passwordController = TextEditingController(text: account?.password ?? '');
+    // Password is never pre-filled from the server for security reasons.
+    _passwordController = TextEditingController();
   }
 
   @override
@@ -44,9 +44,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _showImageSourceBottomSheet(BuildContext context) {
+  // ─── Image Source Bottom Sheet ────────────────────────────────────────────
+
+  void _showImageSourceBottomSheet(BuildContext cubitContext) {
     showModalBottomSheet(
-      context: context,
+      context: cubitContext,
       backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -58,19 +60,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Wrap(
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt_outlined, color: AppColors.primaryGreen),
+                leading: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: AppColors.primaryGreen,
+                ),
                 title: const Text('Take a Photo'),
                 onTap: () {
                   Navigator.pop(modalContext);
-                  context.read<AccountCubit>().pickImage(ImageSource.camera);
+                  cubitContext.read<AccountCubit>().pickImage(ImageSource.camera);
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.photo_library_outlined, color: AppColors.primaryGreen),
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: AppColors.primaryGreen,
+                ),
                 title: const Text('Choose from Gallery'),
                 onTap: () {
                   Navigator.pop(modalContext);
-                  context.read<AccountCubit>().pickImage(ImageSource.gallery);
+                  cubitContext.read<AccountCubit>().pickImage(ImageSource.gallery);
                 },
               ),
             ],
@@ -80,11 +88,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  // ─── Save ─────────────────────────────────────────────────────────────────
+
+  void _onSave(BuildContext context) {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (name.isEmpty || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Name and Email cannot be empty'),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    context.read<AccountCubit>().updateProfile(
+          name: name,
+          email: email,
+          // Only send password when the user actually typed something.
+          password: password.isNotEmpty ? password : null,
+        );
+  }
+
+  // ─── Build ────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AccountCubit, AccountState>(
       listener: (context, state) {
         if (state is AccountUpdateSuccess) {
+          // ✅ Success — show SnackBar then return `true` to the caller so
+          //    AccountScreen knows it must re-fetch from the API.
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile updated successfully!'),
@@ -92,8 +130,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               behavior: SnackBarBehavior.floating,
             ),
           );
-          Navigator.pop(context);
+          // Pop with `true` so AccountScreen can react.
+          Navigator.pop(context, true);
         } else if (state is AccountError) {
+          // ❌ Failure — show SnackBar and stay on screen so the user can fix
+          //    and retry. Form values are preserved.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -109,12 +150,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         final selectedImage = cubit.selectedImageFile;
         final isUpdating = state is AccountUpdating;
 
+        // Resolve the avatar image to display.
         ImageProvider? avatarImage;
         Widget? avatarChild;
-
         if (selectedImage != null) {
           avatarImage = FileImage(selectedImage);
-        } else if (account?.profileImage != null && account!.profileImage!.isNotEmpty) {
+        } else if (account?.profileImage != null &&
+            account!.profileImage!.isNotEmpty) {
           avatarImage = CachedNetworkImageProvider(account.profileImage!);
         } else {
           avatarChild = const Icon(
@@ -130,11 +172,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
               color: AppColors.charcoal,
+              // Disable the back button while the API call is in progress.
               onPressed: isUpdating
                   ? null
                   : () {
                       cubit.clearSelectedImage();
-                      Navigator.pop(context);
+                      Navigator.pop(context, false);
                     },
             ),
             title: const Text(
@@ -152,11 +195,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           body: SafeArea(
             child: PopScope(
+              // Prevent accidental back swipe while updating.
               canPop: !isUpdating,
               onPopInvokedWithResult: (didPop, _) {
-                if (didPop) {
-                  cubit.clearSelectedImage();
-                }
+                if (didPop) cubit.clearSelectedImage();
               },
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -167,7 +209,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: AppSpacing.base1x),
-                    // Profile Image with camera overlapping badge
+
+                    // ── Profile Avatar with camera badge ──────────────────
                     Center(
                       child: Stack(
                         children: [
@@ -189,7 +232,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               child: avatarChild,
                             ),
                           ),
-                          // Overlapping Camera Button
                           Positioned(
                             bottom: 0,
                             right: 0,
@@ -209,7 +251,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color.fromRGBO(0, 0, 0, 0.15),
+                                      color:
+                                          const Color.fromRGBO(0, 0, 0, 0.15),
                                       blurRadius: 6,
                                       offset: const Offset(0, 2),
                                     ),
@@ -226,16 +269,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                       ),
                     ),
+
                     const SizedBox(height: AppSpacing.base5x),
 
-                    // Editable Fields
+                    // ── Name ─────────────────────────────────────────────
                     _buildLabeledField(
                       label: 'Name',
                       hint: 'Enter your name',
                       controller: _nameController,
                       enabled: !isUpdating,
                     ),
+
                     const SizedBox(height: AppSpacing.base2x),
+
+                    // ── Email ─────────────────────────────────────────────
                     _buildLabeledField(
                       label: 'Email',
                       hint: 'Enter your email',
@@ -243,7 +290,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       keyboardType: TextInputType.emailAddress,
                       enabled: !isUpdating,
                     ),
+
                     const SizedBox(height: AppSpacing.base2x),
+
+                    // ── Password (optional) ───────────────────────────────
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -257,7 +307,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         const SizedBox(height: AppSpacing.base1x),
                         CustomTextField(
                           controller: _passwordController,
-                          hintText: 'Enter password',
+                          hintText: 'New password (optional)',
                           obscureText: _obscurePassword,
                           readOnly: isUpdating,
                           suffixIcon: IconButton(
@@ -270,45 +320,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                             onPressed: isUpdating
                                 ? null
-                                : () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
+                                : () => setState(
+                                      () => _obscurePassword = !_obscurePassword,
+                                    ),
                           ),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: AppSpacing.base6x),
 
-                    // Save Changes Button
+                    // ── Save Changes Button ───────────────────────────────
                     CustomButton(
                       title: 'Save Changes',
                       backgroundColor: AppColors.primaryGreen,
                       isLoading: isUpdating,
-                      onPressed: () {
-                        final name = _nameController.text.trim();
-                        final email = _emailController.text.trim();
-                        final password = _passwordController.text.trim();
-
-                        if (name.isEmpty || email.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Name and Email cannot be empty'),
-                              backgroundColor: Colors.orange,
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          return;
-                        }
-
-                        cubit.updateProfile(
-                          name: name,
-                          email: email,
-                          password: password.isNotEmpty ? password : null,
-                        );
-                      },
+                      onPressed: () => _onSave(context),
                     ),
+
                     const SizedBox(height: AppSpacing.base2x),
                   ],
                 ),

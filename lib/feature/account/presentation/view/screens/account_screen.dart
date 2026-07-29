@@ -28,6 +28,29 @@ class _AccountScreenState extends State<AccountScreen> {
     _cubit = serviceLocator<AccountCubit>()..getProfile();
   }
 
+  // ─── Open Edit Profile ────────────────────────────────────────────────────
+
+  Future<void> _openEditProfile(BuildContext context) async {
+    // Pass the same cubit instance so no new Cubit is created.
+    final updated = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: context.read<AccountCubit>(),
+          child: const EditProfileScreen(),
+        ),
+      ),
+    );
+
+    // If the edit was successful, re-fetch from the API so the UI always
+    // reflects the latest backend data — never stale local data.
+    if (updated == true && context.mounted) {
+      context.read<AccountCubit>().getProfile();
+    }
+  }
+
+  // ─── Build ────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -51,6 +74,7 @@ class _AccountScreenState extends State<AccountScreen> {
         body: SafeArea(
           child: BlocBuilder<AccountCubit, AccountState>(
             builder: (context, state) {
+              // ── Loading ──────────────────────────────────────────────────
               if (state is AccountLoading) {
                 return const Center(
                   child: CircularProgressIndicator(
@@ -59,6 +83,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
 
+              // ── Error ────────────────────────────────────────────────────
               if (state is AccountError) {
                 return Center(
                   child: Padding(
@@ -68,6 +93,12 @@ class _AccountScreenState extends State<AccountScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Icon(
+                          Icons.error_outline_rounded,
+                          color: Colors.red,
+                          size: 48,
+                        ),
+                        const SizedBox(height: AppSpacing.base2x),
                         Text(
                           state.message,
                           textAlign: TextAlign.center,
@@ -89,12 +120,17 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
 
+              // ── Loaded ───────────────────────────────────────────────────
               if (state is AccountLoaded) {
-                return _AccountContent(account: state.account);
+                return _AccountContent(
+                  account: state.account,
+                  onEditPressed: () => _openEditProfile(context),
+                );
               }
 
+              // ── Initial / fallback ───────────────────────────────────────
               return const Center(
-                child: Text('Initialize Account Data...'),
+                child: Text('Loading account data...'),
               );
             },
           ),
@@ -104,50 +140,22 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 }
 
-class _AccountContent extends StatefulWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// Account Content (read-only profile view)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AccountContent extends StatelessWidget {
   final AccountEntity account;
+  final VoidCallback onEditPressed;
 
-  const _AccountContent({required this.account});
-
-  @override
-  State<_AccountContent> createState() => _AccountContentState();
-}
-
-class _AccountContentState extends State<_AccountContent> {
-  late final TextEditingController _nameController;
-  late final TextEditingController _emailController;
-  late final TextEditingController _passwordController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.account.name);
-    _emailController = TextEditingController(text: widget.account.email);
-    _passwordController = TextEditingController(text: '********');
-  }
-
-  @override
-  void didUpdateWidget(covariant _AccountContent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.account.name != widget.account.name) {
-      _nameController.text = widget.account.name;
-    }
-    if (oldWidget.account.email != widget.account.email) {
-      _emailController.text = widget.account.email;
-    }
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  const _AccountContent({
+    required this.account,
+    required this.onEditPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final profileImage = widget.account.profileImage;
+    final profileImage = account.profileImage;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
@@ -158,7 +166,8 @@ class _AccountContentState extends State<_AccountContent> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: AppSpacing.base1x),
-          // Circular Profile Image
+
+          // ── Profile Avatar ──────────────────────────────────────────────
           Center(
             child: Container(
               decoration: BoxDecoration(
@@ -187,67 +196,58 @@ class _AccountContentState extends State<_AccountContent> {
               ),
             ),
           ),
+
           const SizedBox(height: AppSpacing.base2x),
-          // User Full Name
+
+          // ── Name ────────────────────────────────────────────────────────
           Text(
-            widget.account.name.isNotEmpty ? widget.account.name : 'No Name',
+            account.name.isNotEmpty ? account.name : 'No Name',
             style: AppTextStyles.h2Heading.copyWith(
               color: AppColors.charcoal,
             ),
           ),
+
           const SizedBox(height: AppSpacing.base1x),
-          // User Email
+
+          // ── Email ────────────────────────────────────────────────────────
           Text(
-            widget.account.email.isNotEmpty ? widget.account.email : 'No Email',
+            account.email.isNotEmpty ? account.email : 'No Email',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textGrey,
               fontWeight: FontWeight.w500,
             ),
           ),
+
           const SizedBox(height: AppSpacing.base4x),
 
-          // Read-only custom fields
+          // ── Read-only fields ─────────────────────────────────────────────
           _buildLabeledField(
+            context: context,
             label: 'Name',
-            hint: 'Name',
-            controller: _nameController,
+            value: account.name,
           ),
           const SizedBox(height: AppSpacing.base2x),
           _buildLabeledField(
+            context: context,
             label: 'Email',
-            hint: 'Email',
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
+            value: account.email,
           ),
           const SizedBox(height: AppSpacing.base2x),
           _buildLabeledField(
+            context: context,
             label: 'Password',
-            hint: 'Password',
-            controller: _passwordController,
+            value: '••••••••',
           ),
+
           const SizedBox(height: AppSpacing.base6x),
 
-          // Edit Profile Button
+          // ── Edit Profile Button ──────────────────────────────────────────
           CustomButton(
             title: 'Edit Profile',
             backgroundColor: AppColors.primaryGreen,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<AccountCubit>(),
-                    child: const EditProfileScreen(),
-                  ),
-                ),
-              ).then((_) {
-                // Refresh profile data upon returning
-                if (context.mounted) {
-                  context.read<AccountCubit>().getProfile();
-                }
-              });
-            },
+            onPressed: onEditPressed,
           ),
+
           const SizedBox(height: AppSpacing.base2x),
         ],
       ),
@@ -255,10 +255,9 @@ class _AccountContentState extends State<_AccountContent> {
   }
 
   Widget _buildLabeledField({
+    required BuildContext context,
     required String label,
-    required String hint,
-    required TextEditingController controller,
-    TextInputType? keyboardType,
+    required String value,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,10 +271,9 @@ class _AccountContentState extends State<_AccountContent> {
         ),
         const SizedBox(height: AppSpacing.base1x),
         CustomTextField(
-          controller: controller,
-          hintText: hint,
+          controller: TextEditingController(text: value),
+          hintText: label,
           readOnly: true,
-          keyboardType: keyboardType,
         ),
       ],
     );
