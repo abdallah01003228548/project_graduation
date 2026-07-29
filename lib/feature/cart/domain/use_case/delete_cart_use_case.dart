@@ -1,15 +1,14 @@
 import 'package:injectable/injectable.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
-import 'package:project_graduation/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:project_graduation/feature/cart/domain/repo/cart_repo_interface.dart';
 
 @injectable
-class GetCartUseCase {
+class DeleteCartUseCase {
   final CartRepoInterface cartRepoInterface;
 
-  GetCartUseCase(this.cartRepoInterface);
+  DeleteCartUseCase(this.cartRepoInterface);
 
-  Future<ResultApi<List<CartItemEntity>>> invoke() {
-    return cartRepoInterface.getCart();
+  Future<ResultApi<void>> call(int productId) {
+    return cartRepoInterface.deleteFromCart(productId.toString());
   }
 }
