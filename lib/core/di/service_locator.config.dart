@@ -28,22 +28,6 @@ import 'package:project_graduation/feature/cart/domain/use_case/get_cart_use_cas
     as _i934;
 import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart'
     as _i572;
-import 'package:project_graduation/feature/favourite/data/repo/favourite_data_source_imp.dart'
-    as _i40;
-import 'package:project_graduation/feature/favourite/data/repo/favourite_repo_imp.dart'
-    as _i525;
-import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_source_interface.dart'
-    as _i667;
-import 'package:project_graduation/feature/favourite/domain/repo/favourite_repo_interface.dart'
-    as _i400;
-import 'package:project_graduation/feature/favourite/domain/use_case/add_favourite_use_case.dart'
-    as _i623;
-import 'package:project_graduation/feature/favourite/domain/use_case/delete_favourite_use_case.dart'
-    as _i92;
-import 'package:project_graduation/feature/favourite/domain/use_case/get_favourite_use_case.dart'
-    as _i455;
-import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart'
-    as _i117;
 import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
     as _i947;
 import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
@@ -81,9 +65,6 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i983.NetworkModule>(() => _i983.NetworkModule());
-    gh.factory<_i667.FavouriteDataSource>(
-      () => _i40.FavouriteDataSourceImp(gh<_i983.NetworkModule>()),
-    );
     gh.factory<_i587.SearchRemoteDataSource>(
       () => _i803.SearchRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
@@ -94,9 +75,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i912.CartRemoteDataSourceImp(
         networkModule: gh<_i983.NetworkModule>(),
       ),
-    );
-    gh.factory<_i400.FavouriteRepository>(
-      () => _i525.FavouriteRepoImp(gh<_i667.FavouriteDataSource>()),
     );
     gh.lazySingleton<_i104.CartRepoInterface>(
       () => _i937.CartRepoImp(
@@ -126,26 +104,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i422.SearchProductsUseCase>(
       () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
     );
-    gh.factory<_i623.AddFavouriteUseCase>(
-      () => _i623.AddFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i92.DeleteFavouriteUseCase>(
-      () => _i92.DeleteFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i455.GetFavouriteUseCase>(
-      () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i117.FavouriteCubit>(
-      () => _i117.FavouriteCubit(
-        gh<_i455.GetFavouriteUseCase>(),
-        gh<_i623.AddFavouriteUseCase>(),
-        gh<_i92.DeleteFavouriteUseCase>(),
-      ),
-    );
     gh.factory<_i1047.SearchCubit>(
       () => _i1047.SearchCubit(gh<_i422.SearchProductsUseCase>()),
     );
-    gh.factory<_i572.CartCubit>(
+    gh.lazySingleton<_i572.CartCubit>(
       () => _i572.CartCubit(
         gh<_i934.GetCartUseCase>(),
         gh<_i799.AddCartUseCase>(),
