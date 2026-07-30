@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/feature/account/presentation/view/screens/account_screen.dart';
 import 'package:project_graduation/feature/app_section/view_model/app_section_cubit.dart';
 import 'package:project_graduation/feature/app_section/view_model/app_section_state.dart';
 import 'package:project_graduation/feature/cart/presentation/view/screen/cart_screen.dart';
-import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart';
 import 'package:project_graduation/feature/favourite/presentation/view/screens/favourite_screen.dart';
 import 'package:project_graduation/feature/home/presentation/view/screens/home_screen.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
@@ -33,16 +31,8 @@ class AppSectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AppSectionCubit>(
-          create: (_) => AppSectionCubit(),
-        ),
-
-        BlocProvider<CartCubit>(
-          create: (_) => serviceLocator<CartCubit>(),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => AppSectionCubit(),
       child: BlocBuilder<AppSectionCubit, AppSectionState>(
         builder: (context, state) {
           return Scaffold(
@@ -53,33 +43,26 @@ class AppSectionScreen extends StatelessWidget {
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.currentIndex,
               selectedItemColor: AppColors.orangeLight,
-              unselectedItemColor: AppColors.charcoal,
-              type: BottomNavigationBarType.fixed,
+              unselectedItemColor: const Color(0xFF5C5C5C),
               onTap: (index) {
                 context.read<AppSectionCubit>().changeIndex(index);
-                if (index == 1) {
-                  context.read<CartCubit>().getCart();
-                }
               },
-              items: List.generate(
-                _screens.length,
-                (index) {
-                  final isSelected = state.currentIndex == index;
-
-                  return BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                      _iconPaths[index],
-                      colorFilter: ColorFilter.mode(
-                        isSelected
-                            ? AppColors.orangeLight
-                            : AppColors.charcoal,
-                        BlendMode.srcIn,
-                      ),
+              type: BottomNavigationBarType.fixed,
+              items: List.generate(_screens.length, (index) {
+                final isSelected = state.currentIndex == index;
+                return BottomNavigationBarItem(
+                  icon: SvgPicture.asset(
+                    _iconPaths[index],
+                    colorFilter: ColorFilter.mode(
+                      isSelected
+                          ? AppColors.orangeLight
+                          : const Color(0xFF5C5C5C),
+                      BlendMode.srcIn,
                     ),
-                    label: _labels[index],
-                  );
-                },
-              ),
+                  ),
+                  label: _labels[index],
+                );
+              }),
             ),
           );
         },

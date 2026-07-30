@@ -8,7 +8,7 @@ import 'package:project_graduation/feature/home/presentation/view/widget/home_ca
 import 'package:project_graduation/feature/home/presentation/view/widget/home_greeting_widget.dart';
 import 'package:project_graduation/feature/home/presentation/view/widget/home_product_grid_widget.dart';
 import 'package:project_graduation/feature/home/presentation/view_model/home/home_cubit.dart';
-import 'package:project_graduation/feature/search/presentation/view/search_screen.dart';
+import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,22 +18,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final Set<String> _favoriteIds = {};
+
   String _selectedCategory = 'All';
 
-  void _toggleFavorite(String productId) {
-    setState(() {
-      if (_favoriteIds.contains(productId)) {
-        _favoriteIds.remove(productId);
-      } else {
-        _favoriteIds.add(productId);
-      }
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeCubit>(
+    return BlocProvider(
       create: (_) => serviceLocator<HomeCubit>()..getHomeData(),
       child: Scaffold(
         backgroundColor: AppColors.background,
@@ -47,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Center(child: Text(state.messageError));
               }
               if (state is HomeSuccess) {
-                return _buildContent(context, state);
+                return _buildContent(state);
               }
               return const SizedBox.shrink();
             },
@@ -57,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildContent(BuildContext context, HomeSuccess state) {
+  Widget _buildContent(HomeSuccess state) {
     final categoryNames = <CategoryEntity>[
       CategoryEntity(name: 'All', slug: '', image: ''),
       ...state.categories
@@ -86,27 +78,15 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(child: HomeGreetingHeader()),
-                    IconButton(
-                      onPressed: () => SearchScreen.show(context),
-                      icon: const Icon(Icons.search),
-                      color: AppColors.charcoal,
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppColors.lightGray,
-                        shape: const CircleBorder(),
-                      ),
-                    ),
-                  ],
-                ),
+                const HomeGreetingHeader(),
                 const SizedBox(height: 20),
                 HomeCategoryTabs(
                   categories: categoryNames,
                   selectedCategory: selectedCategory,
                   onCategorySelected: (category) {
-                    setState(() => _selectedCategory = category.name);
+                    setState(() {
+                      _selectedCategory = category.name;
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -114,10 +94,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        HomeProductGrid(
-          products: filteredProducts,
-          favoriteIds: _favoriteIds,
-          onFavoriteTap: _toggleFavorite,
+        BlocBuilder<FavouriteCubit, FavouriteState>(
+          builder: (context, favState) {
+            final cubit = context.read<FavouriteCubit>();
+
+            return HomeProductGrid(
+              products: filteredProducts,
+              favoriteIds: cubit.favouriteIds,
+              onFavoriteTap: (product) async {
+                final success = await cubit.toggleFavourite(product);
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        success
+                            ? 'Favourite updated'
+                            : 'Operation failed',
+                      ),
+                    ),
+                  );
+                }
+              },
+            );
+          },
         ),
       ],
     );
