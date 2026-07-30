@@ -4,4 +4,7 @@ class ApiConstants {
   static const getProfile    = '/portfolio/userData';
   static const updateProfile = '/portfolio/editUserData';
   static const addImage       = '/portfolio/addImage';
+  static const getCart = '/user/getCart';
+  static const addCart = '/user/addCart';
+  static const deleteCart = '/user/deleteCart';
 }

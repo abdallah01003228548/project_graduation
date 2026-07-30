@@ -72,9 +72,7 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
       return Success(categories);
     } on DioException catch (e) {
       return Error(
-        e.response?.data?['message']?.toString() ??
-            e.message ??
-            'Failed to fetch categories',
+        e.response?.data?['message'] ?? e.message ?? 'Failed to fetch categories',
       );
     } catch (e) {
       return Error(e.toString());
