@@ -59,7 +59,11 @@ class AuthDataSourceImp implements AuthDataSource {
 
     var url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.login}');
 
-    var response = await http.post(url, body: {'email': email, 'password': password});
+    var response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
+    );
     var responseBody = response.body;
     var json = jsonDecode(responseBody);
     if (response.statusCode >= 200 && response.statusCode < 300) {
