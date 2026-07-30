@@ -41,9 +41,6 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       ),
     );
-
-    // If the edit was successful, re-fetch from the API so the UI always
-    // reflects the latest backend data — never stale local data.
     if (updated == true && context.mounted) {
       context.read<AccountCubit>().getProfile();
     }

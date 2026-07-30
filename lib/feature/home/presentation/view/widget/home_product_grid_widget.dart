@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart';
 import 'package:project_graduation/feature/product_details/presentation/view/screens/product_details_screen.dart';
 import 'package:project_graduation/core/model/widget/product_item_card.dart';
 import 'package:project_graduation/core/theme/app_spacing.dart'; // adjust import path to your existing ProductItemCard
@@ -38,8 +40,9 @@ class HomeProductGrid extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ProductDetailsScreen(
-                    product: item,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<CartCubit>(),
+                    child: ProductDetailsScreen(product: item),
                   ),
                 ),
               );
