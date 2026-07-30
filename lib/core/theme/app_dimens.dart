@@ -1,4 +1,3 @@
-
 class AppDimens {
   AppDimens._();
 
@@ -12,9 +11,10 @@ class AppDimens {
   static const double radiusM = 16;
   static const double radiusL = 24;
   static const double radiusPill = 100;
+  static const double radiusButton = 10;
 
-  static const double cardRadius = radiusM; 
-  static const double chipRadius = radiusPill; 
+  static const double cardRadius = radiusM;
+  static const double chipRadius = radiusPill;
 
   // Icon sizes
   static const double iconS = 16;

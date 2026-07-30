@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:project_graduation/core/constants/app_keys.dart';
 import 'package:project_graduation/core/network/api/api_constants.dart';
-import 'package:project_graduation/core/storage_helper/local_storage_service.dart';
+import 'package:project_graduation/core/storage_helper/secure_storage_helper.dart';
 
 @lazySingleton
 class NetworkModule {
@@ -17,7 +18,7 @@ class NetworkModule {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = await LocalStorageService.getToken();
+          final token = await SecureStorageHelper.instance.getSecure(key: AppKeys.token);
 
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
