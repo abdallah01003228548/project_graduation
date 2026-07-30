@@ -48,6 +48,7 @@ dependencies:
   flutter_svg: ^2.3.0
   toastification: ^3.2.0
   http: ^1.6.0
+  flutter_secure_storage: ^10.3.1
 
 dev_dependencies:
   flutter_test:
