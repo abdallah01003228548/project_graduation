@@ -14,7 +14,6 @@ class LoginResponseDto {
   }
 
 
-// to entity 
 LoginResponseEntity toEntity() {
   return LoginResponseEntity(
     message: message ?? '',

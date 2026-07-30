@@ -2,7 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_graduation/core/constants/app_routes.dart';
+import 'package:project_graduation/core/constants/app_strings.dart';
 import 'package:project_graduation/core/di/service_locator.dart';
+import 'package:project_graduation/core/theme/app_colors.dart';
+import 'package:project_graduation/core/theme/app_dimens.dart';
+
+import 'package:project_graduation/core/theme/app_text_styles.dart';
 import 'package:project_graduation/core/utils/app_dialog.dart';
 import 'package:project_graduation/core/utils/app_tost.dart';
 import 'package:project_graduation/core/utils/validator_app.dart';
@@ -41,8 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
             AppToast.showToast(
               context: context,
-              title: "Success",
-              description: "Logged in successfully!",
+              title: AppStrings.success,
+              description: AppStrings.loggedInSuccessfully,
               type: ToastificationType.success,
             );
             Navigator.pushReplacementNamed(context, AppRoutes.appSection);
@@ -50,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
             AppToast.showToast(
               context: context,
-              title: "Error",
+              title: AppStrings.error,
               description: state.error,
               type: ToastificationType.error,
             );
@@ -58,51 +63,47 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(
-              "Login",
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff1F1F1F),
-              ),
+            title: Text(
+              AppStrings.login,
+              style: AppTextStyles.h2Heading,
             ),
             centerTitle: true,
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppDimens.spaceL),
             child: Form(
               key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 30),
-                  const Text(
-                    "Email",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceXL),
+                  Text(
+                    AppStrings.emailLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: emailController,
                     validator: Validator.validateEmail,
-                    hintText: "Enter your email",
+                    hintText: AppStrings.enterYourEmail,
                     keyboardType: TextInputType.emailAddress,
                     action: TextInputAction.next,
                   ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    "Password",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceXL),
+                  Text(
+                    AppStrings.passwordLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: passwordController,
                     validator: Validator.validatePassword,
-                    hintText: "Enter your password",
+                    hintText: AppStrings.enterYourPassword,
                     keyboardType: TextInputType.visiblePassword,
                     isPassword: true,
                     action: TextInputAction.done,
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: AppDimens.spaceXL),
                   Builder(
                     builder: (btnContext) {
                       return MaterialButton(
@@ -119,16 +120,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         },
-                        color: const Color(0xff212121),
+                        color: AppColors.charcoal,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(AppDimens.radiusButton),
                         ),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xffFFFFFF),
+                        child: Text(
+                          AppStrings.login,
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColors.white,
                           ),
                         ),
                       );
@@ -145,15 +144,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.bottomCenter,
                   child: Text.rich(
                     TextSpan(
-                      text: "Don't have an account? ",
-                      style: const TextStyle(
-                          fontSize: 14, color: Color(0xff6E6A7C)),
+                      text: AppStrings.dontHaveAccount,
+                      style: AppTextStyles.bodyMedium,
                       children: [
                         TextSpan(
-                          text: "Sign Up",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xff212121),
+                          text: AppStrings.signUp,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.charcoal,
                             fontWeight: FontWeight.w500,
                           ),
                           recognizer: TapGestureRecognizer()

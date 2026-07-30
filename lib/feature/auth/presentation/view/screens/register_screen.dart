@@ -2,7 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_graduation/core/constants/app_routes.dart';
+import 'package:project_graduation/core/constants/app_strings.dart';
 import 'package:project_graduation/core/di/service_locator.dart';
+import 'package:project_graduation/core/theme/app_colors.dart';
+import 'package:project_graduation/core/theme/app_dimens.dart';
+
+import 'package:project_graduation/core/theme/app_text_styles.dart';
 import 'package:project_graduation/core/utils/app_dialog.dart';
 import 'package:project_graduation/core/utils/app_tost.dart';
 import 'package:project_graduation/core/utils/validator_app.dart';
@@ -46,8 +51,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Navigator.pop(context);
             AppToast.showToast(
               context: context,
-              title: "Success",
-              description: "Account created successfully!",
+              title: AppStrings.success,
+              description: AppStrings.accountCreatedSuccessfully,
               type: ToastificationType.success,
             );
             Navigator.pushReplacementNamed(context, AppRoutes.login);
@@ -55,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Navigator.pop(context);
             AppToast.showToast(
               context: context,
-              title: "Error",
+              title: AppStrings.error,
               description: state.errorMessage,
               type: ToastificationType.error,
             );
@@ -63,92 +68,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(
-              "SignUp",
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff1F1F1F),
-              ),
+            title: Text(
+              AppStrings.signUpTitle,
+              style: AppTextStyles.h2Heading,
             ),
             centerTitle: true,
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppDimens.spaceL),
             child: Form(
               key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 15),
-                  const Text(
-                    "Name",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceL),
+                  Text(
+                    AppStrings.nameLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: nameController,
                     validator: Validator.validateName,
-                    hintText: "Enter your name",
+                    hintText: AppStrings.enterYourName,
                     keyboardType: TextInputType.text,
                     action: TextInputAction.next,
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    "Phone Number",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceL),
+                  Text(
+                    AppStrings.phoneNumberLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: phoneNumberController,
                     validator: Validator.validatePhoneNumber,
-                    hintText: "Enter your phone number",
+                    hintText: AppStrings.enterYourPhoneNumber,
                     keyboardType: TextInputType.phone,
                     action: TextInputAction.next,
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    "Email",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceL),
+                  Text(
+                    AppStrings.emailLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: emailController,
                     validator: Validator.validateEmail,
-                    hintText: "Enter your email",
+                    hintText: AppStrings.enterYourEmail,
                     keyboardType: TextInputType.emailAddress,
                     action: TextInputAction.next,
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    "Password",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceL),
+                  Text(
+                    AppStrings.passwordLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: passwordController,
                     validator: Validator.validatePassword,
-                    hintText: "Enter your password",
+                    hintText: AppStrings.enterYourPassword,
                     isPassword: true,
                     action: TextInputAction.next,
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    "Confirm Password",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const SizedBox(height: AppDimens.spaceL),
+                  Text(
+                    AppStrings.confirmPasswordLabel,
+                    style: AppTextStyles.bodyLarge,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: AppDimens.spaceXS),
                   CustomTextFormField(
                     controller: confirmPasswordController,
                     validator: (value) => Validator.validateConfirmPassword(
                       value,
                       passwordController.text,
                     ),
-                    hintText: "Enter your confirm password",
+                    hintText: AppStrings.enterYourConfirmPassword,
                     isPassword: true,
                     action: TextInputAction.done,
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: AppDimens.spaceXL),
                   Builder(
                     builder: (btnContext) {
                       return MaterialButton(
@@ -173,16 +174,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
                           }
                         },
-                        color: const Color(0xff212121),
+                        color: AppColors.charcoal,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(AppDimens.radiusButton),
                         ),
-                        child: const Text(
-                          "Sign up",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xffFFFFFF),
+                        child: Text(
+                          AppStrings.signUpButtonText,
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColors.white,
                           ),
                         ),
                       );
@@ -201,17 +200,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   alignment: Alignment.bottomCenter,
                   child: Text.rich(
                     TextSpan(
-                      text: "Already have an account? ",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff6E6A7C),
-                      ),
+                      text: AppStrings.alreadyHaveAccount,
+                      style: AppTextStyles.bodyMedium,
                       children: [
                         TextSpan(
-                          text: "Login",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xff212121),
+                          text: AppStrings.login,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.charcoal,
                             fontWeight: FontWeight.w500,
                           ),
                           recognizer: TapGestureRecognizer()

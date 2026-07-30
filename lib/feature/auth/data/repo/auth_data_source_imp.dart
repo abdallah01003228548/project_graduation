@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
@@ -20,7 +19,6 @@ class AuthDataSourceImp implements AuthDataSource {
       phone: request.phone,
       email: request.email,
       password: request.password,
-      confirmPassword: request.confirmPassword,
     );
     try {
       Uri url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.register}');
@@ -30,8 +28,6 @@ class AuthDataSourceImp implements AuthDataSource {
         body: jsonEncode(requestDto.toJson()),
       );
       var responseBody = response.body;
-      log("REGISTER STATUS: ${response.statusCode}");
-      log("REGISTER BODY: $responseBody");
       dynamic json;
       try {
         json = jsonDecode(responseBody);
@@ -40,7 +36,6 @@ class AuthDataSourceImp implements AuthDataSource {
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        log(responseBody);
         return Success(json != null && json['message'] != null ? json['message'].toString() : 'Success');
       } else {
         String errorMsg = json != null && json['message'] != null
@@ -78,4 +73,3 @@ class AuthDataSourceImp implements AuthDataSource {
     }
   }
 }
-// انا واقف في الفيديو التاني عند الدقيقه 14:50 بكرا كملهم لحد الاخر 

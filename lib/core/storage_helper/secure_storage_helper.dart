@@ -20,8 +20,7 @@ class SecureStorageHelper {
   Future<void> saveSecure({
     required String key,
     required String? value,
-  }) async =>
-      await _storage.write(key: key, value: value);
+  }) async => await _storage.write(key: key, value: value);
 
   Future<String?> getSecure({required String key}) async =>
       await _storage.read(key: key);
