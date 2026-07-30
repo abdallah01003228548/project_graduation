@@ -4,10 +4,12 @@ import 'package:project_graduation/feature/account/data/model/account_dto.dart';
 
 abstract interface class AccountRemoteDataSource {
   Future<ResultApi<AccountDto>> getProfile();
-  Future<ResultApi<AccountDto>> updateProfile({
+  Future<ResultApi<void>> updateProfile({
     required String name,
     required String email,
+    String? phone,
+    String? address,
     String? password,
-    File? imageFile,
   });
+  Future<ResultApi<void>> uploadImage(File imageFile);
 }

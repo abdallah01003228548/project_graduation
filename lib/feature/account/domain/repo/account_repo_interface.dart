@@ -4,10 +4,12 @@ import 'package:project_graduation/feature/account/domain/entities/account_entit
 
 abstract interface class AccountRepoInterface {
   Future<ResultApi<AccountEntity>> getProfile();
-  Future<ResultApi<AccountEntity>> updateProfile({
+  Future<ResultApi<void>> updateProfile({
     required String name,
     required String email,
+    String? phone,
+    String? address,
     String? password,
-    File? imageFile,
   });
+  Future<ResultApi<void>> uploadImage(File imageFile);
 }

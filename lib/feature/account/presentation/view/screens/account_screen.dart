@@ -28,10 +28,7 @@ class _AccountScreenState extends State<AccountScreen> {
     _cubit = serviceLocator<AccountCubit>()..getProfile();
   }
 
-  // ─── Open Edit Profile ────────────────────────────────────────────────────
-
   Future<void> _openEditProfile(BuildContext context) async {
-    // Pass the same cubit instance so no new Cubit is created.
     final updated = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
@@ -42,14 +39,10 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
     );
 
-    // If the edit was successful, re-fetch from the API so the UI always
-    // reflects the latest backend data — never stale local data.
     if (updated == true && context.mounted) {
       context.read<AccountCubit>().getProfile();
     }
   }
-
-  // ─── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +67,6 @@ class _AccountScreenState extends State<AccountScreen> {
         body: SafeArea(
           child: BlocBuilder<AccountCubit, AccountState>(
             builder: (context, state) {
-              // ── Loading ──────────────────────────────────────────────────
               if (state is AccountLoading) {
                 return const Center(
                   child: CircularProgressIndicator(
@@ -83,14 +75,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
 
-              // ── Empty State (No Profile) ─────────────────────────────────
               if (state is AccountEmpty) {
                 return _AccountEmptyContent(
                   onCreatePressed: () => _openEditProfile(context),
                 );
               }
 
-              // ── Error ────────────────────────────────────────────────────
               if (state is AccountError) {
                 return Center(
                   child: Padding(
@@ -127,7 +117,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
 
-              // ── Loaded ───────────────────────────────────────────────────
               if (state is AccountLoaded) {
                 return _AccountContent(
                   account: state.account,
@@ -135,7 +124,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               }
 
-              // ── Initial / fallback ───────────────────────────────────────
               return const Center(
                 child: Text('Loading account data...'),
               );
@@ -146,10 +134,6 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Account Content (read-only profile view)
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _AccountContent extends StatelessWidget {
   final AccountEntity account;
@@ -173,8 +157,6 @@ class _AccountContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: AppSpacing.base1x),
-
-          // ── Profile Avatar ──────────────────────────────────────────────
           Center(
             child: Container(
               decoration: BoxDecoration(
@@ -203,20 +185,14 @@ class _AccountContent extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: AppSpacing.base2x),
-
-          // ── Name ────────────────────────────────────────────────────────
           Text(
             account.name.isNotEmpty ? account.name : 'No Name',
             style: AppTextStyles.h2Heading.copyWith(
               color: AppColors.charcoal,
             ),
           ),
-
           const SizedBox(height: AppSpacing.base1x),
-
-          // ── Email ────────────────────────────────────────────────────────
           Text(
             account.email.isNotEmpty ? account.email : 'No Email',
             style: AppTextStyles.bodyMedium.copyWith(
@@ -224,10 +200,7 @@ class _AccountContent extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-
           const SizedBox(height: AppSpacing.base4x),
-
-          // ── Read-only fields ─────────────────────────────────────────────
           _buildLabeledField(
             context: context,
             label: 'Name',
@@ -240,21 +213,33 @@ class _AccountContent extends StatelessWidget {
             value: account.email,
           ),
           const SizedBox(height: AppSpacing.base2x),
+          if (account.phone != null && account.phone!.isNotEmpty) ...[
+            _buildLabeledField(
+              context: context,
+              label: 'Phone',
+              value: account.phone!,
+            ),
+            const SizedBox(height: AppSpacing.base2x),
+          ],
+          if (account.address != null && account.address!.isNotEmpty) ...[
+            _buildLabeledField(
+              context: context,
+              label: 'Address',
+              value: account.address!,
+            ),
+            const SizedBox(height: AppSpacing.base2x),
+          ],
           _buildLabeledField(
             context: context,
             label: 'Password',
             value: '••••••••',
           ),
-
           const SizedBox(height: AppSpacing.base6x),
-
-          // ── Edit Profile Button ──────────────────────────────────────────
           CustomButton(
             title: 'Edit Profile',
             backgroundColor: AppColors.primaryGreen,
             onPressed: onEditPressed,
           ),
-
           const SizedBox(height: AppSpacing.base2x),
         ],
       ),
@@ -287,10 +272,6 @@ class _AccountContent extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Account Empty Content (shown when no profile has been created yet)
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _AccountEmptyContent extends StatelessWidget {
   final VoidCallback onCreatePressed;
 
@@ -307,8 +288,6 @@ class _AccountEmptyContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: AppSpacing.base6x),
-
-          // Default Profile Image / Avatar
           Center(
             child: Container(
               decoration: BoxDecoration(
@@ -332,9 +311,7 @@ class _AccountEmptyContent extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: AppSpacing.base4x),
-
           Text(
             "You haven't created your profile yet.",
             textAlign: TextAlign.center,
@@ -343,9 +320,7 @@ class _AccountEmptyContent extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-
           const SizedBox(height: AppSpacing.base6x),
-
           CustomButton(
             title: 'Create Profile',
             backgroundColor: AppColors.primaryGreen,

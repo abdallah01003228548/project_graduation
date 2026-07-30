@@ -10,17 +10,23 @@ class UpdateAccountUseCase {
 
   UpdateAccountUseCase(this._accountRepo);
 
-  Future<ResultApi<AccountEntity>> invoke({
+  Future<ResultApi<void>> invoke({
     required String name,
     required String email,
+    String? phone,
+    String? address,
     String? password,
-    File? imageFile,
   }) {
     return _accountRepo.updateProfile(
       name: name,
       email: email,
+      phone: phone,
+      address: address,
       password: password,
-      imageFile: imageFile,
     );
+  }
+
+  Future<ResultApi<void>> uploadImage(File imageFile) {
+    return _accountRepo.uploadImage(imageFile);
   }
 }

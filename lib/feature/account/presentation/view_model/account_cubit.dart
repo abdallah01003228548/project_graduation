@@ -22,8 +22,6 @@ class AccountCubit extends Cubit<AccountState> {
     this._updateAccountUseCase,
   ) : super(AccountInitial());
 
-  // ─── Get Profile ──────────────────────────────────────────────────────────
-
   Future<void> getProfile() async {
     emit(AccountLoading());
     final result = await _getAccountUseCase.invoke();
@@ -51,11 +49,11 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
-  // ─── Update Profile ───────────────────────────────────────────────────────
-
   Future<void> updateProfile({
     required String name,
     required String email,
+    String? phone,
+    String? address,
     String? password,
   }) async {
     emit(AccountUpdating());
@@ -63,24 +61,24 @@ class AccountCubit extends Cubit<AccountState> {
     final result = await _updateAccountUseCase.invoke(
       name: name,
       email: email,
+      phone: phone,
+      address: address,
       password: password,
-      imageFile: selectedImageFile,
     );
 
-    if (result is Success<AccountEntity>) {
-      currentAccount = result.data;
-      selectedImageFile = null; // clear local image on success
-      emit(AccountUpdateSuccess(result.data));
-    } else if (result is Error<AccountEntity>) {
-      // Stay in error state — the UI listener will show a SnackBar and keep
-      // the user on the Edit screen so they can retry.
+    if (result is Success<void>) {
+      await getProfile();
+      if (state is AccountLoaded) {
+        emit(AccountUpdateSuccess((state as AccountLoaded).account));
+      } else if (currentAccount != null) {
+        emit(AccountUpdateSuccess(currentAccount!));
+      }
+    } else if (result is Error<void>) {
       emit(AccountError(result.messageError));
     }
   }
 
-  // ─── Image Picker ─────────────────────────────────────────────────────────
-
-  Future<void> pickImage(ImageSource source) async {
+  Future<void> pickImageAndUpload(ImageSource source) async {
     try {
       final XFile? pickedFile = await _imagePicker.pickImage(
         source: source,
@@ -88,17 +86,21 @@ class AccountCubit extends Cubit<AccountState> {
       );
       if (pickedFile != null) {
         selectedImageFile = File(pickedFile.path);
-        // Re-emit the current loaded state so the avatar preview rebuilds.
-        if (currentAccount != null) {
-          emit(AccountLoaded(currentAccount!));
+        
+        emit(AccountUpdating());
+        final result = await _updateAccountUseCase.uploadImage(selectedImageFile!);
+        
+        if (result is Success<void>) {
+           selectedImageFile = null;
+           await getProfile();
+        } else if (result is Error<void>) {
+           emit(AccountError(result.messageError));
         }
       }
     } catch (e) {
-      emit(AccountError('Failed to pick image: ${e.toString()}'));
+      emit(AccountError('Failed to pick/upload image: ${e.toString()}'));
     }
   }
-
-  // ─── Helpers ──────────────────────────────────────────────────────────────
 
   void clearSelectedImage() {
     selectedImageFile = null;

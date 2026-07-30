@@ -28,24 +28,41 @@ class AccountRepoImp implements AccountRepoInterface {
   }
 
   @override
-  Future<ResultApi<AccountEntity>> updateProfile({
+  Future<ResultApi<void>> updateProfile({
     required String name,
     required String email,
+    String? phone,
+    String? address,
     String? password,
-    File? imageFile,
   }) async {
     final result = await _remoteDataSource.updateProfile(
       name: name,
       email: email,
+      phone: phone,
+      address: address,
       password: password,
-      imageFile: imageFile,
     );
 
-    if (result is Success<AccountDto>) {
-      return Success(result.data.toEntity());
+    if (result is Success<void>) {
+      return const Success(null);
     }
 
-    if (result is Error<AccountDto>) {
+    if (result is Error<void>) {
+      return Error(result.messageError);
+    }
+
+    return Error('Unexpected error');
+  }
+
+  @override
+  Future<ResultApi<void>> uploadImage(File imageFile) async {
+    final result = await _remoteDataSource.uploadImage(imageFile);
+
+    if (result is Success<void>) {
+      return const Success(null);
+    }
+
+    if (result is Error<void>) {
       return Error(result.messageError);
     }
 

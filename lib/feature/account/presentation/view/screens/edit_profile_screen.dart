@@ -21,6 +21,8 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _addressController;
   late final TextEditingController _passwordController;
 
   bool _obscurePassword = true;
@@ -28,11 +30,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill with the current cached account data from the cubit.
     final account = context.read<AccountCubit>().currentAccount;
     _nameController = TextEditingController(text: account?.name ?? '');
     _emailController = TextEditingController(text: account?.email ?? '');
-    // Password is never pre-filled from the server for security reasons.
+    _phoneController = TextEditingController(text: account?.phone ?? '');
+    _addressController = TextEditingController(text: account?.address ?? '');
     _passwordController = TextEditingController();
   }
 
@@ -40,11 +42,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
+    _addressController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-
-  // ─── Image Source Bottom Sheet ────────────────────────────────────────────
 
   void _showImageSourceBottomSheet(BuildContext cubitContext) {
     showModalBottomSheet(
@@ -67,7 +69,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 title: const Text('Take a Photo'),
                 onTap: () {
                   Navigator.pop(modalContext);
-                  cubitContext.read<AccountCubit>().pickImage(ImageSource.camera);
+                  cubitContext.read<AccountCubit>().pickImageAndUpload(ImageSource.camera);
                 },
               ),
               ListTile(
@@ -78,7 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 title: const Text('Choose from Gallery'),
                 onTap: () {
                   Navigator.pop(modalContext);
-                  cubitContext.read<AccountCubit>().pickImage(ImageSource.gallery);
+                  cubitContext.read<AccountCubit>().pickImageAndUpload(ImageSource.gallery);
                 },
               ),
             ],
@@ -88,11 +90,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  // ─── Save ─────────────────────────────────────────────────────────────────
-
   void _onSave(BuildContext context) {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
+    final address = _addressController.text.trim();
     final password = _passwordController.text.trim();
 
     if (name.isEmpty || email.isEmpty) {
@@ -109,20 +111,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     context.read<AccountCubit>().updateProfile(
           name: name,
           email: email,
-          // Only send password when the user actually typed something.
+          phone: phone.isNotEmpty ? phone : null,
+          address: address.isNotEmpty ? address : null,
           password: password.isNotEmpty ? password : null,
         );
   }
-
-  // ─── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AccountCubit, AccountState>(
       listener: (context, state) {
         if (state is AccountUpdateSuccess) {
-          // ✅ Success — show SnackBar then return `true` to the caller so
-          //    AccountScreen knows it must re-fetch from the API.
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile updated successfully!'),
@@ -130,11 +129,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               behavior: SnackBarBehavior.floating,
             ),
           );
-          // Pop with `true` so AccountScreen can react.
           Navigator.pop(context, true);
         } else if (state is AccountError) {
-          // ❌ Failure — show SnackBar and stay on screen so the user can fix
-          //    and retry. Form values are preserved.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -150,7 +146,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         final selectedImage = cubit.selectedImageFile;
         final isUpdating = state is AccountUpdating;
 
-        // Resolve the avatar image to display.
         ImageProvider? avatarImage;
         Widget? avatarChild;
         if (selectedImage != null) {
@@ -172,7 +167,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
               color: AppColors.charcoal,
-              // Disable the back button while the API call is in progress.
               onPressed: isUpdating
                   ? null
                   : () {
@@ -195,7 +189,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           body: SafeArea(
             child: PopScope(
-              // Prevent accidental back swipe while updating.
               canPop: !isUpdating,
               onPopInvokedWithResult: (didPop, _) {
                 if (didPop) cubit.clearSelectedImage();
@@ -209,8 +202,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: AppSpacing.base1x),
-
-                    // ── Profile Avatar with camera badge ──────────────────
                     Center(
                       child: Stack(
                         children: [
@@ -233,147 +224,149 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                           ),
                           Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: isUpdating
-                                  ? null
-                                  : () => _showImageSourceBottomSheet(context),
-                              child: Container(
-                                height: 38,
-                                width: 38,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryGreen,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 3,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          const Color.fromRGBO(0, 0, 0, 0.15),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(
-                                  Icons.camera_alt_rounded,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                             bottom: 0,
+                             right: 0,
+                             child: GestureDetector(
+                               onTap: isUpdating
+                                   ? null
+                                   : () => _showImageSourceBottomSheet(context),
+                               child: Container(
+                                 height: 38,
+                                 width: 38,
+                                 decoration: BoxDecoration(
+                                   color: AppColors.primaryGreen,
+                                   shape: BoxShape.circle,
+                                   border: Border.all(
+                                     color: Colors.white,
+                                     width: 3,
+                                   ),
+                                   boxShadow: [
+                                     BoxShadow(
+                                       color:
+                                           const Color.fromRGBO(0, 0, 0, 0.15),
+                                       blurRadius: 6,
+                                       offset: const Offset(0, 2),
+                                     ),
+                                   ],
+                                 ),
+                                 child: const Icon(
+                                   Icons.camera_alt_rounded,
+                                   color: Colors.white,
+                                   size: 16,
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                     const SizedBox(height: AppSpacing.base5x),
+                     _buildLabeledField(
+                       label: 'Name',
+                       hint: 'Enter your name',
+                       controller: _nameController,
+                       enabled: !isUpdating,
+                     ),
+                     const SizedBox(height: AppSpacing.base2x),
+                     _buildLabeledField(
+                       label: 'Email',
+                       hint: 'Enter your email',
+                       controller: _emailController,
+                       keyboardType: TextInputType.emailAddress,
+                       enabled: !isUpdating,
+                     ),
+                     const SizedBox(height: AppSpacing.base2x),
+                     _buildLabeledField(
+                       label: 'Phone',
+                       hint: 'Enter your phone',
+                       controller: _phoneController,
+                       keyboardType: TextInputType.phone,
+                       enabled: !isUpdating,
+                     ),
+                     const SizedBox(height: AppSpacing.base2x),
+                     _buildLabeledField(
+                       label: 'Address',
+                       hint: 'Enter your address',
+                       controller: _addressController,
+                       enabled: !isUpdating,
+                     ),
+                     const SizedBox(height: AppSpacing.base2x),
+                     Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text(
+                           'Password',
+                           style: AppTextStyles.bodyMedium.copyWith(
+                             fontWeight: FontWeight.w600,
+                             color: AppColors.charcoal,
+                           ),
+                         ),
+                         const SizedBox(height: AppSpacing.base1x),
+                         CustomTextField(
+                           controller: _passwordController,
+                           hintText: 'New password (optional)',
+                           obscureText: _obscurePassword,
+                           readOnly: isUpdating,
+                           suffixIcon: IconButton(
+                             icon: Icon(
+                               _obscurePassword
+                                   ? Icons.visibility_off_outlined
+                                   : Icons.visibility_outlined,
+                               color: AppColors.textGrey,
+                               size: 22,
+                             ),
+                             onPressed: isUpdating
+                                 ? null
+                                 : () => setState(
+                                       () => _obscurePassword = !_obscurePassword,
+                                     ),
+                           ),
+                         ),
+                       ],
+                     ),
+                     const SizedBox(height: AppSpacing.base6x),
+                     CustomButton(
+                       title: 'Save Changes',
+                       backgroundColor: AppColors.primaryGreen,
+                       isLoading: isUpdating,
+                       onPressed: () => _onSave(context),
+                     ),
+                     const SizedBox(height: AppSpacing.base2x),
+                   ],
+                 ),
+               ),
+             ),
+           ),
+         );
+       },
+     );
+   }
 
-                    const SizedBox(height: AppSpacing.base5x),
-
-                    // ── Name ─────────────────────────────────────────────
-                    _buildLabeledField(
-                      label: 'Name',
-                      hint: 'Enter your name',
-                      controller: _nameController,
-                      enabled: !isUpdating,
-                    ),
-
-                    const SizedBox(height: AppSpacing.base2x),
-
-                    // ── Email ─────────────────────────────────────────────
-                    _buildLabeledField(
-                      label: 'Email',
-                      hint: 'Enter your email',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      enabled: !isUpdating,
-                    ),
-
-                    const SizedBox(height: AppSpacing.base2x),
-
-                    // ── Password (optional) ───────────────────────────────
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Password',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.charcoal,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.base1x),
-                        CustomTextField(
-                          controller: _passwordController,
-                          hintText: 'New password (optional)',
-                          obscureText: _obscurePassword,
-                          readOnly: isUpdating,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: AppColors.textGrey,
-                              size: 22,
-                            ),
-                            onPressed: isUpdating
-                                ? null
-                                : () => setState(
-                                      () => _obscurePassword = !_obscurePassword,
-                                    ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: AppSpacing.base6x),
-
-                    // ── Save Changes Button ───────────────────────────────
-                    CustomButton(
-                      title: 'Save Changes',
-                      backgroundColor: AppColors.primaryGreen,
-                      isLoading: isUpdating,
-                      onPressed: () => _onSave(context),
-                    ),
-
-                    const SizedBox(height: AppSpacing.base2x),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLabeledField({
-    required String label,
-    required String hint,
-    required TextEditingController controller,
-    required bool enabled,
-    TextInputType? keyboardType,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.bodyMedium.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.charcoal,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.base1x),
-        CustomTextField(
-          controller: controller,
-          hintText: hint,
-          readOnly: !enabled,
-          keyboardType: keyboardType,
-        ),
-      ],
-    );
-  }
+   Widget _buildLabeledField({
+     required String label,
+     required String hint,
+     required TextEditingController controller,
+     required bool enabled,
+     TextInputType? keyboardType,
+   }) {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Text(
+           label,
+           style: AppTextStyles.bodyMedium.copyWith(
+             fontWeight: FontWeight.w600,
+             color: AppColors.charcoal,
+           ),
+         ),
+         const SizedBox(height: AppSpacing.base1x),
+         CustomTextField(
+           controller: controller,
+           hintText: hint,
+           readOnly: !enabled,
+           keyboardType: keyboardType,
+         ),
+       ],
+     );
+   }
 }
