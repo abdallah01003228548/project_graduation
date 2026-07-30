@@ -22,8 +22,12 @@ import 'package:project_graduation/feature/auth/domain/repo/auth_repo_interface.
     as _i405;
 import 'package:project_graduation/feature/auth/domain/use_case/login_use_case.dart'
     as _i199;
+import 'package:project_graduation/feature/auth/domain/use_case/register_use_case.dart'
+    as _i348;
 import 'package:project_graduation/feature/auth/presentation/view_model/cubit/login/login_cubit.dart'
     as _i812;
+import 'package:project_graduation/feature/auth/presentation/view_model/cubit/register/register_cubit.dart'
+    as _i60;
 import 'package:project_graduation/feature/cart/data/data_source/cart_remote_data_source.dart'
     as _i103;
 import 'package:project_graduation/feature/cart/data/data_source/cart_remote_data_source_imp.dart'
@@ -100,11 +104,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i199.LoginUseCase>(
       () => _i199.LoginUseCase(gh<_i405.AuthRepoInterface>()),
     );
+    gh.factory<_i348.RegisterUseCase>(
+      () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
+    );
     gh.factory<_i293.SearchRepoInterface>(
       () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
     );
     gh.factory<_i812.LoginCubit>(
       () => _i812.LoginCubit(gh<_i199.LoginUseCase>()),
+    );
+    gh.factory<_i60.RegisterCubit>(
+      () => _i60.RegisterCubit(gh<_i348.RegisterUseCase>()),
     );
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
