@@ -8,6 +8,8 @@ import 'package:project_graduation/feature/cart/presentation/view/screens/cart_s
 import 'package:project_graduation/feature/favourite/presentation/view/screens/favourite_screen.dart';
 import 'package:project_graduation/feature/home/presentation/view/screens/home_screen.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
+import 'package:project_graduation/core/di/service_locator.dart';
+import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart';
 
 class AppSectionScreen extends StatelessWidget {
   const AppSectionScreen({super.key});
@@ -31,8 +33,16 @@ class AppSectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AppSectionCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => AppSectionCubit(),
+        ),
+        BlocProvider(
+          create: (_) =>
+          serviceLocator<FavouriteCubit>()..getFavouriteProducts(),
+        ),
+      ],
       child: BlocBuilder<AppSectionCubit, AppSectionState>(
         builder: (context, state) {
           return Scaffold(

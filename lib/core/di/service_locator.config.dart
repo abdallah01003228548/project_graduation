@@ -12,6 +12,22 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:project_graduation/core/di/network_module.dart' as _i983;
+import 'package:project_graduation/feature/favourite/data/repo/favourite_data_source_imp.dart'
+    as _i40;
+import 'package:project_graduation/feature/favourite/data/repo/favourite_repo_imp.dart'
+    as _i525;
+import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_source_interface.dart'
+    as _i667;
+import 'package:project_graduation/feature/favourite/domain/repo/favourite_repo_interface.dart'
+    as _i400;
+import 'package:project_graduation/feature/favourite/domain/use_case/add_favourite_use_case.dart'
+    as _i623;
+import 'package:project_graduation/feature/favourite/domain/use_case/delete_favourite_use_case.dart'
+    as _i92;
+import 'package:project_graduation/feature/favourite/domain/use_case/get_favourite_use_case.dart'
+    as _i455;
+import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart'
+    as _i117;
 import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
     as _i947;
 import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
@@ -37,14 +53,36 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i983.NetworkModule>(() => _i983.NetworkModule());
+    gh.factory<_i667.FavouriteDataSource>(
+      () => _i40.FavouriteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
+    gh.factory<_i400.FavouriteRepository>(
+      () => _i525.FavouriteRepoImp(gh<_i667.FavouriteDataSource>()),
     );
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
     );
     gh.factory<_i192.GetCategoriesUseCase>(
       () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
+    );
+    gh.factory<_i623.AddFavouriteUseCase>(
+      () => _i623.AddFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
+    gh.factory<_i92.DeleteFavouriteUseCase>(
+      () => _i92.DeleteFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
+    gh.factory<_i455.GetFavouriteUseCase>(
+      () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
+    gh.factory<_i117.FavouriteCubit>(
+      () => _i117.FavouriteCubit(
+        gh<_i455.GetFavouriteUseCase>(),
+        gh<_i623.AddFavouriteUseCase>(),
+        gh<_i92.DeleteFavouriteUseCase>(),
+      ),
     );
     gh.factory<_i313.GetProductsUseCase>(
       () => _i313.GetProductsUseCase(gh<_i603.HomeRepository>()),
