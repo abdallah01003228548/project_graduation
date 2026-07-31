@@ -69,7 +69,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 title: const Text('Take a Photo'),
                 onTap: () {
                   Navigator.pop(modalContext);
-                  cubitContext.read<AccountCubit>().pickImageAndUpload(ImageSource.camera);
+                  cubitContext.read<AccountCubit>().pickImage(ImageSource.camera);
                 },
               ),
               ListTile(
@@ -80,7 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 title: const Text('Choose from Gallery'),
                 onTap: () {
                   Navigator.pop(modalContext);
-                  cubitContext.read<AccountCubit>().pickImageAndUpload(ImageSource.gallery);
+                  cubitContext.read<AccountCubit>().pickImage(ImageSource.gallery);
                 },
               ),
             ],

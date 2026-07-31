@@ -10,6 +10,7 @@ abstract interface class AccountRemoteDataSource {
     String? phone,
     String? address,
     String? password,
+    File? imageFile,
   });
   Future<ResultApi<void>> uploadImage(File imageFile);
 }

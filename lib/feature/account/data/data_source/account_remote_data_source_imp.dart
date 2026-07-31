@@ -38,6 +38,7 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
     String? phone,
     String? address,
     String? password,
+    File? imageFile,
   }) async {
     try {
       final Map<String, dynamic> dataMap = {
@@ -53,6 +54,14 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
       }
       if (password != null && password.isNotEmpty) {
         dataMap['password'] = password;
+      }
+
+      if (imageFile != null) {
+        final String fileName = imageFile.path.split('/').last;
+        dataMap['image'] = await MultipartFile.fromFile(
+          imageFile.path,
+          filename: fileName,
+        );
       }
 
       final formData = FormData.fromMap(dataMap);

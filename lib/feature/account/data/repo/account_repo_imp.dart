@@ -34,6 +34,7 @@ class AccountRepoImp implements AccountRepoInterface {
     String? phone,
     String? address,
     String? password,
+    File? imageFile,
   }) async {
     final result = await _remoteDataSource.updateProfile(
       name: name,
@@ -41,6 +42,7 @@ class AccountRepoImp implements AccountRepoInterface {
       phone: phone,
       address: address,
       password: password,
+      imageFile: imageFile,
     );
 
     if (result is Success<void>) {

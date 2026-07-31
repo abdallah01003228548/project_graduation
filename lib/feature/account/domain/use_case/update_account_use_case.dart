@@ -16,6 +16,7 @@ class UpdateAccountUseCase {
     String? phone,
     String? address,
     String? password,
+    File? imageFile,
   }) {
     return _accountRepo.updateProfile(
       name: name,
@@ -23,6 +24,7 @@ class UpdateAccountUseCase {
       phone: phone,
       address: address,
       password: password,
+      imageFile: imageFile,
     );
   }
 
