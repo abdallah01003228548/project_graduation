@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/core/model/widget/product_item_card.dart';
 import 'package:project_graduation/core/theme/custom_text_field.dart';
+import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart';
+import 'package:project_graduation/feature/product_details/presentation/view/screens/product_details_screen.dart';
 import 'package:project_graduation/feature/search/presentation/view_model/search_cubit.dart';
 import 'package:project_graduation/feature/search/presentation/view_model/search_state.dart';
 
@@ -82,10 +84,25 @@ class _SearchBody extends StatelessWidget {
                       final product = state.products[index];
 
                       return ProductItemCard(
-                        item: product, onFavoriteTap: () {  }, isFavorite: false, onTap: () {  }
+                        item: product,
+                        isFavorite: false,
+                        onFavoriteTap: () {},
+                        onTap: () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                           builder: (_) => BlocProvider.value(
+                            value: serviceLocator<CartCubit>(),
+                            child: ProductDetailsScreen(
+                            product: product,
+                           ),
+                         ),
+                       ),
                       );
                     },
-                  ),
+                   );
+                  },
+                 ),
               };
             },
           ),

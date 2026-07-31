@@ -29,7 +29,7 @@ class ProductItemCard extends StatelessWidget {
               product.thumbnail,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
-                color: AppColors.white,
+                color: AppColors.borderItemBackground,
                 alignment: Alignment.center,
                 child: const Icon(Icons.image_not_supported_outlined),
               ),
@@ -45,20 +45,17 @@ class ProductItemCard extends StatelessWidget {
                   product.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.charcoal,
                   ),
                 ),
 
                 const SizedBox(height: 6),
 
                 Text(
-                  'EGP ${product.price}',
-                  style: TextStyle(
+                  'USD ${product.price.toStringAsFixed(2)}',
+                  style: AppTextStyles.h3Heading.copyWith(
                     color: AppColors.orangeLight,
-                    fontSize: AppTextStyles.h3Heading.fontSize,
-                    fontWeight: AppTextStyles.h3Heading.fontWeight,
                   ),
                 ),
               ],

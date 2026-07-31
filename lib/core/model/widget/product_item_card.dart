@@ -9,7 +9,7 @@ class ProductItemCard extends StatelessWidget {
   const ProductItemCard({
     super.key,
     required this.item,
-    this.currency = 'EGP',
+    this.currency = 'USD ',
     this.onTap,
    required this.onFavoriteTap,
    required this.isFavorite,

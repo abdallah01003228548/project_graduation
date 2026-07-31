@@ -4,8 +4,8 @@ import 'package:project_graduation/feature/home/presentation/view/screens/home_s
 
 import 'package:project_graduation/feature/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:project_graduation/feature/hello/presentation/screens/hello_screen.dart';
-import 'package:project_graduation/feature/auth/presentation/screens/login_screen.dart';
-import 'package:project_graduation/feature/auth/presentation/screens/register_screen.dart';
+import 'package:project_graduation/feature/auth/presentation/view/screens/login_screen.dart';
+import 'package:project_graduation/feature/auth/presentation/view/screens/register_screen.dart';
 import 'package:project_graduation/feature/app_section/view/app_section_screen.dart';
 class AppRoutes {
   AppRoutes._();

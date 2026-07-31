@@ -20,4 +20,6 @@ class AppColors {
 
   // app background
   static const Color background = Color(0xFFFCFCFC);
+  static const Color borderItemBackground = Color(0xFF383838);
+  
 }

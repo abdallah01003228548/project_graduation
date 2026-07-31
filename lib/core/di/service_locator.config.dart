@@ -26,6 +26,22 @@ import 'package:project_graduation/feature/account/domain/use_case/update_accoun
     as _i165;
 import 'package:project_graduation/feature/account/presentation/view_model/account_cubit.dart'
     as _i1066;
+import 'package:project_graduation/feature/auth/data/repo/auth_data_source_imp.dart'
+    as _i1071;
+import 'package:project_graduation/feature/auth/data/repo/auth_repo_imp.dart'
+    as _i82;
+import 'package:project_graduation/feature/auth/domain/repo/auth_data_source.dart'
+    as _i192;
+import 'package:project_graduation/feature/auth/domain/repo/auth_repo_interface.dart'
+    as _i405;
+import 'package:project_graduation/feature/auth/domain/use_case/login_use_case.dart'
+    as _i199;
+import 'package:project_graduation/feature/auth/domain/use_case/register_use_case.dart'
+    as _i348;
+import 'package:project_graduation/feature/auth/presentation/view_model/cubit/login/login_cubit.dart'
+    as _i812;
+import 'package:project_graduation/feature/auth/presentation/view_model/cubit/register/register_cubit.dart'
+    as _i60;
 import 'package:project_graduation/feature/cart/data/data_source/cart_remote_data_source.dart'
     as _i103;
 import 'package:project_graduation/feature/cart/data/data_source/cart_remote_data_source_imp.dart'
@@ -87,6 +103,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i895.AccountRepoInterface>(
       () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
+    gh.factory<_i192.AuthDataSource>(() => _i1071.AuthDataSourceImp());
+    gh.factory<_i405.AuthRepoInterface>(
+      () => _i82.AuthRepoImp(gh<_i192.AuthDataSource>()),
     );
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
@@ -101,8 +120,20 @@ extension GetItInjectableX on _i174.GetIt {
         cartRemoteDataSource: gh<_i103.CartRemoteDataSource>(),
       ),
     );
+    gh.factory<_i199.LoginUseCase>(
+      () => _i199.LoginUseCase(gh<_i405.AuthRepoInterface>()),
+    );
+    gh.factory<_i348.RegisterUseCase>(
+      () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
+    );
     gh.factory<_i293.SearchRepoInterface>(
       () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
+    );
+    gh.factory<_i812.LoginCubit>(
+      () => _i812.LoginCubit(gh<_i199.LoginUseCase>()),
+    );
+    gh.factory<_i60.RegisterCubit>(
+      () => _i60.RegisterCubit(gh<_i348.RegisterUseCase>()),
     );
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
