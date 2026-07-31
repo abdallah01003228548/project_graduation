@@ -57,8 +57,8 @@ class AccountRepoImp implements AccountRepoInterface {
   }
 
   @override
-  Future<ResultApi<void>> uploadImage(File imageFile) async {
-    final result = await _remoteDataSource.uploadImage(imageFile);
+  Future<ResultApi<void>> addImage(File imageFile) async {
+    final result = await _remoteDataSource.addImage(imageFile);
 
     if (result is Success<void>) {
       return  Success(null);

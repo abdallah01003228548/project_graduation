@@ -159,7 +159,7 @@ class _CheckoutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double shippingFee = 45.0;
+    const double shippingFee = 30;
 
     final double finalTotal = totalPrice + shippingFee;
 

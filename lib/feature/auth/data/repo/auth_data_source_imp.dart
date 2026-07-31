@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -59,7 +60,7 @@ class AuthDataSourceImp implements AuthDataSource {
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
-    );
+    ).timeout(const Duration(seconds: 20));
     var responseBody = response.body;
     var json = jsonDecode(responseBody);
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -69,7 +70,9 @@ class AuthDataSourceImp implements AuthDataSource {
       return Error(json['message']);
     }
 
-    }catch(e){
+    } on TimeoutException {
+      return Error('The login server did not respond. Please try again.');
+    } catch(e){
       return Error(e.toString());
     }
   }

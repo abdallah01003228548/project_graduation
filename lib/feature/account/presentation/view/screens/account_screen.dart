@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -120,6 +122,8 @@ class _AccountScreenState extends State<AccountScreen> {
               if (state is AccountLoaded) {
                 return _AccountContent(
                   account: state.account,
+                  localProfileImage:
+                      context.read<AccountCubit>().selectedImageFile,
                   onEditPressed: () => _openEditProfile(context),
                 );
               }
@@ -137,10 +141,12 @@ class _AccountScreenState extends State<AccountScreen> {
 
 class _AccountContent extends StatelessWidget {
   final AccountEntity account;
+  final File? localProfileImage;
   final VoidCallback onEditPressed;
 
   const _AccountContent({
     required this.account,
+    required this.localProfileImage,
     required this.onEditPressed,
   });
 
@@ -158,31 +164,70 @@ class _AccountContent extends StatelessWidget {
         children: [
           const SizedBox(height: AppSpacing.base1x),
           Center(
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromRGBO(0, 0, 0, 0.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromRGBO(0, 0, 0, 0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: CircleAvatar(
-                radius: 56,
-                backgroundColor: AppColors.lightGray,
-                backgroundImage: profileImage != null && profileImage.isNotEmpty
-                    ? CachedNetworkImageProvider(profileImage)
-                    : null,
-                child: profileImage == null || profileImage.isEmpty
-                    ? const Icon(
-                        Icons.person,
-                        size: 56,
-                        color: AppColors.textGrey,
-                      )
-                    : null,
-              ),
+                  child: CircleAvatar(
+                    radius: 56,
+                    backgroundColor: AppColors.lightGray,
+                    child: localProfileImage != null
+                        ? ClipOval(
+                            child: Image.file(
+                              localProfileImage!,
+                              width: 112,
+                              height: 112,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : profileImage != null && profileImage.isNotEmpty
+                        ? ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: profileImage,
+                              width: 112,
+                              height: 112,
+                              fit: BoxFit.cover,
+                              errorWidget: (_, __, ___) => const Icon(
+                                Icons.person,
+                                size: 56,
+                                color: AppColors.textGrey,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.person,
+                            size: 56,
+                            color: AppColors.textGrey,
+                          ),
+                  ),
+                ),
+                Positioned(
+                  right: -4,
+                  bottom: -4,
+                  child: Material(
+                    color: AppColors.primaryGreen,
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      tooltip: 'Add profile photo',
+                      icon: const Icon(
+                        Icons.camera_alt_rounded,
+                        color: Colors.white,
+                      ),
+                      onPressed: onEditPressed,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: AppSpacing.base2x),

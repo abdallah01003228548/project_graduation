@@ -101,11 +101,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i587.SearchRemoteDataSource>(
       () => _i803.SearchRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
-    gh.factory<_i895.AccountRepoInterface>(
-      () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
     gh.factory<_i192.AuthDataSource>(() => _i1071.AuthDataSourceImp());
     gh.factory<_i405.AuthRepoInterface>(
       () => _i82.AuthRepoImp(gh<_i192.AuthDataSource>()),
+    );
+    gh.factory<_i895.AccountRepoInterface>(
+      () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
     );
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),

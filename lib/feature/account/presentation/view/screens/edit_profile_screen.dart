@@ -26,6 +26,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late final TextEditingController _passwordController;
 
   bool _obscurePassword = true;
+  bool _profileSaved = false;
 
   @override
   void initState() {
@@ -122,6 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return BlocConsumer<AccountCubit, AccountState>(
       listener: (context, state) {
         if (state is AccountUpdateSuccess) {
+          _profileSaved = true;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile updated successfully!'),
@@ -191,7 +193,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: PopScope(
               canPop: !isUpdating,
               onPopInvokedWithResult: (didPop, _) {
-                if (didPop) cubit.clearSelectedImage();
+                if (didPop && !_profileSaved) {
+                  cubit.clearSelectedImage();
+                }
               },
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
