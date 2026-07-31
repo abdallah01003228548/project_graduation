@@ -12,6 +12,20 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:project_graduation/core/di/network_module.dart' as _i983;
+import 'package:project_graduation/feature/account/data/data_source/account_remote_data_source.dart'
+    as _i540;
+import 'package:project_graduation/feature/account/data/data_source/account_remote_data_source_imp.dart'
+    as _i280;
+import 'package:project_graduation/feature/account/data/repo/account_repo_imp.dart'
+    as _i231;
+import 'package:project_graduation/feature/account/domain/repo/account_repo_interface.dart'
+    as _i895;
+import 'package:project_graduation/feature/account/domain/use_case/get_account_use_case.dart'
+    as _i274;
+import 'package:project_graduation/feature/account/domain/use_case/update_account_use_case.dart'
+    as _i165;
+import 'package:project_graduation/feature/account/presentation/view_model/account_cubit.dart'
+    as _i1066;
 import 'package:project_graduation/feature/auth/data/repo/auth_data_source_imp.dart'
     as _i1071;
 import 'package:project_graduation/feature/auth/data/repo/auth_repo_imp.dart'
@@ -81,9 +95,14 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i983.NetworkModule>(() => _i983.NetworkModule());
+    gh.factory<_i540.AccountRemoteDataSource>(
+      () => _i280.AccountRemoteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
     gh.factory<_i587.SearchRemoteDataSource>(
       () => _i803.SearchRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
+    gh.factory<_i895.AccountRepoInterface>(
+      () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
     gh.factory<_i192.AuthDataSource>(() => _i1071.AuthDataSourceImp());
     gh.factory<_i405.AuthRepoInterface>(
       () => _i82.AuthRepoImp(gh<_i192.AuthDataSource>()),
@@ -130,11 +149,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i934.GetCartUseCase>(
       () => _i934.GetCartUseCase(gh<_i104.CartRepoInterface>()),
     );
+    gh.factory<_i274.GetAccountUseCase>(
+      () => _i274.GetAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    );
+    gh.factory<_i165.UpdateAccountUseCase>(
+      () => _i165.UpdateAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    );
     gh.factory<_i192.GetCategoriesUseCase>(
       () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
     );
     gh.factory<_i422.SearchProductsUseCase>(
       () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
+    );
+    gh.lazySingleton<_i1066.AccountCubit>(
+      () => _i1066.AccountCubit(
+        gh<_i274.GetAccountUseCase>(),
+        gh<_i165.UpdateAccountUseCase>(),
+      ),
     );
     gh.factory<_i1047.SearchCubit>(
       () => _i1047.SearchCubit(gh<_i422.SearchProductsUseCase>()),

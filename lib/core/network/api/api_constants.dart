@@ -3,6 +3,9 @@ class ApiConstants {
   static const register = '/auth/signUp';
   static const login = '/auth/signIn';
   static const productsFilter = '/home/productsFilter';
+  static const getProfile    = '/portfoilo/userData';
+  static const updateProfile = '/portfoilo/editUserData';
+  static const addImage       = '/portfoilo/addImage';
   static const getCart = '/user/getCart';
   static const addCart = '/user/addCart';
   static const deleteCart = '/user/deleteCart';
