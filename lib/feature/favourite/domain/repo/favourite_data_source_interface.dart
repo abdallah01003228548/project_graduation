@@ -1,8 +1,8 @@
-import 'package:project_graduation/core/model/item/product_item_dto.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
+import 'package:project_graduation/feature/favourite/data/model/favourite_dto.dart';
 
-abstract interface class FavouriteDataSource {
-  Future<ResultApi<List<ProductItemDto>>> getFavouriteProducts();
+abstract interface class FavouriteDataSourceInterface {
+  Future<ResultApi<FavouriteDto>> getFavouriteProducts();
 
   Future<ResultApi<String>> addFavourite(int productId);
 

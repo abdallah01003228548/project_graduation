@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/feature/account/presentation/view/screens/account_screen.dart';
 import 'package:project_graduation/feature/app_section/view_model/app_section_cubit.dart';
 import 'package:project_graduation/feature/app_section/view_model/app_section_state.dart';
 import 'package:project_graduation/feature/cart/presentation/view/screen/cart_screen.dart';
 import 'package:project_graduation/feature/favourite/presentation/view/screens/favourite_screen.dart';
+import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart';
 import 'package:project_graduation/feature/home/presentation/view/screens/home_screen.dart';
 import 'package:project_graduation/core/theme/app_colors.dart';
 
 class AppSectionScreen extends StatelessWidget {
   const AppSectionScreen({super.key});
-
 
   static const List<Widget> _screens = [
     HomeScreen(),
@@ -31,8 +32,14 @@ class AppSectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AppSectionCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AppSectionCubit()),
+        BlocProvider(
+          create: (context) =>
+          serviceLocator<FavouriteCubit>()..getFavouriteProducts(),
+        ),
+      ],
       child: BlocBuilder<AppSectionCubit, AppSectionState>(
         builder: (context, state) {
           return Scaffold(

@@ -81,7 +81,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i983.NetworkModule>(() => _i983.NetworkModule());
-    gh.factory<_i667.FavouriteDataSource>(
+    gh.factory<_i667.FavouriteDataSourceInterface>(
       () => _i40.FavouriteDataSourceImp(gh<_i983.NetworkModule>()),
     );
     gh.factory<_i587.SearchRemoteDataSource>(
@@ -90,17 +90,33 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
+    gh.factory<_i400.FavouriteRepository>(
+      () => _i525.FavouriteRepoImp(gh<_i667.FavouriteDataSourceInterface>()),
+    );
     gh.lazySingleton<_i103.CartRemoteDataSource>(
       () => _i912.CartRemoteDataSourceImp(
         networkModule: gh<_i983.NetworkModule>(),
       ),
     );
-    gh.factory<_i400.FavouriteRepository>(
-      () => _i525.FavouriteRepoImp(gh<_i667.FavouriteDataSource>()),
+    gh.factory<_i623.AddFavouriteUseCase>(
+      () => _i623.AddFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
+    gh.factory<_i92.DeleteFavouriteUseCase>(
+      () => _i92.DeleteFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
+    gh.factory<_i455.GetFavouriteUseCase>(
+      () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
     );
     gh.lazySingleton<_i104.CartRepoInterface>(
       () => _i937.CartRepoImp(
         cartRemoteDataSource: gh<_i103.CartRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i117.FavouriteCubit>(
+      () => _i117.FavouriteCubit(
+        gh<_i455.GetFavouriteUseCase>(),
+        gh<_i623.AddFavouriteUseCase>(),
+        gh<_i92.DeleteFavouriteUseCase>(),
       ),
     );
     gh.factory<_i293.SearchRepoInterface>(
@@ -125,22 +141,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i422.SearchProductsUseCase>(
       () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
-    );
-    gh.factory<_i623.AddFavouriteUseCase>(
-      () => _i623.AddFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i92.DeleteFavouriteUseCase>(
-      () => _i92.DeleteFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i455.GetFavouriteUseCase>(
-      () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i117.FavouriteCubit>(
-      () => _i117.FavouriteCubit(
-        gh<_i455.GetFavouriteUseCase>(),
-        gh<_i623.AddFavouriteUseCase>(),
-        gh<_i92.DeleteFavouriteUseCase>(),
-      ),
     );
     gh.factory<_i1047.SearchCubit>(
       () => _i1047.SearchCubit(gh<_i422.SearchProductsUseCase>()),

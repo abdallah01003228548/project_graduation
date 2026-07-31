@@ -18,10 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String _selectedCategory = 'All';
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,20 +51,20 @@ class _HomeScreenState extends State<HomeScreen> {
       CategoryEntity(name: 'All', slug: '', image: ''),
       ...state.categories
           .map((c) => c is CategoryEntity
-              ? c as CategoryEntity
-              : CategoryEntity(name: c.toString(), slug: '', image: ''))
+          ? c as CategoryEntity
+          : CategoryEntity(name: c.toString(), slug: '', image: ''))
           .toList(),
     ];
     final selectedCategory = categoryNames.any(
           (category) => category.name == _selectedCategory,
-        )
+    )
         ? _selectedCategory
         : 'All';
     final filteredProducts = selectedCategory == 'All'
         ? state.products
         : state.products
-            .where((product) => product.category == selectedCategory)
-            .toList();
+        .where((product) => product.category == selectedCategory)
+        .toList();
 
     return CustomScrollView(
       slivers: [
@@ -94,7 +91,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        BlocBuilder<FavouriteCubit, FavouriteState>(
+        BlocConsumer<FavouriteCubit, FavouriteState>(
+          listener: (context, favState) {
+            if (favState is FavouriteError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(favState.messageError)),
+              );
+            }
+          },
           builder: (context, favState) {
             final cubit = context.read<FavouriteCubit>();
 
@@ -102,15 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
               products: filteredProducts,
               favoriteIds: cubit.favouriteIds,
               onFavoriteTap: (product) async {
-                final success = await cubit.toggleFavourite(product);
+                final result = await cubit.toggleFavourite(product);
 
-                if (context.mounted) {
+                if (context.mounted && result != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        success
-                            ? 'Favourite updated'
-                            : 'Operation failed',
+                        result
+                            ? 'Added to favourites'
+                            : 'Removed from favourites',
                       ),
                     ),
                   );

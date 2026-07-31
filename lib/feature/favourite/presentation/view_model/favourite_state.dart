@@ -7,10 +7,10 @@ class FavouriteInitial extends FavouriteState {}
 class FavouriteLoading extends FavouriteState {}
 
 class FavouriteSuccess extends FavouriteState {
-  final List<ProductItemEntity> products;
+  final FavouriteEntity favourite;
 
   FavouriteSuccess({
-    required this.products,
+    required this.favourite,
   });
 }
 

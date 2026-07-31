@@ -1,15 +1,9 @@
+import 'package:project_graduation/feature/home/domain/entities/product_item_entity.dart';
+
 class FavouriteEntity {
-  final String id;
-  final String name;
-  final String description;
-  final double price;
-  final String thumbnail;
+  final List<ProductItemEntity> products;
 
   FavouriteEntity({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.thumbnail,
+    required this.products,
   });
 }

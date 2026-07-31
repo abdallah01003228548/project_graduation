@@ -1,32 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:project_graduation/core/network/api/api_constants.dart';
 import 'package:project_graduation/core/di/network_module.dart';
-import 'package:project_graduation/core/model/item/product_item_dto.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
+import 'package:project_graduation/feature/favourite/data/model/favourite_dto.dart';
 import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_source_interface.dart';
 
-@Injectable(as: FavouriteDataSource)
-class FavouriteDataSourceImp implements FavouriteDataSource {
+@Injectable(as: FavouriteDataSourceInterface)
+class FavouriteDataSourceImp implements FavouriteDataSourceInterface {
   final NetworkModule networkModule;
 
   FavouriteDataSourceImp(this.networkModule);
 
   @override
-  Future<ResultApi<List<ProductItemDto>>> getFavouriteProducts() async {
+  Future<ResultApi<FavouriteDto>> getFavouriteProducts() async {
     try {
-      final response = await networkModule.get('/user/getFavorite');
+      final response = await networkModule.get(
+        ApiConstants.getFavourite,
+      );
 
-      final List<dynamic> list = response.data['list'];
+      final favouriteDto = FavouriteDto.fromJson(response.data);
 
-      final products = list
-          .map(
-            (json) => ProductItemDto.fromJson(
-          json as Map<String, dynamic>,
-        ),
-      )
-          .toList();
-
-      return Success(products);
+      return Success(favouriteDto);
     } on DioException catch (e) {
       return Error(
         e.response?.data?['message']?.toString() ??
@@ -42,7 +37,7 @@ class FavouriteDataSourceImp implements FavouriteDataSource {
   Future<ResultApi<String>> addFavourite(int productId) async {
     try {
       final response = await networkModule.post(
-        '/user/addFavorite',
+        ApiConstants.addFavourite,
         data: {
           'productId': productId,
         },
@@ -68,7 +63,7 @@ class FavouriteDataSourceImp implements FavouriteDataSource {
   Future<ResultApi<String>> deleteFavourite(int productId) async {
     try {
       final response = await networkModule.delete(
-        '/user/deleteFavorite',
+        ApiConstants.deleteFavourite,
         data: {
           'productId': productId,
         },
