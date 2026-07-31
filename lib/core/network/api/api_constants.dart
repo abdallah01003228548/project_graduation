@@ -17,4 +17,8 @@ class ApiConstants {
   static const String getCart ='/user/getCart';
   static const String addCart ='/user/addCart';
   static const String deleteCart ='/user/deleteCart';
+
+  static const getFavourite = '/user/getFavorite';
+  static const addFavourite = '/user/addFavorite';
+  static const deleteFavourite = '/user/deleteFavorite';
 }

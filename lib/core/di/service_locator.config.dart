@@ -58,6 +58,18 @@ import 'package:project_graduation/feature/cart/domain/use_case/get_cart_use_cas
     as _i934;
 import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart'
     as _i572;
+import 'package:project_graduation/feature/favourite/data/repo/favourite_data_source_imp.dart'
+    as _i40;
+import 'package:project_graduation/feature/favourite/data/repo/favourite_repo_imp.dart'
+    as _i525;
+import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_source_interface.dart'
+    as _i667;
+import 'package:project_graduation/feature/favourite/domain/repo/favourite_repo_interface.dart'
+    as _i400;
+import 'package:project_graduation/feature/favourite/domain/use_case/get_favourite_use_case.dart'
+    as _i455;
+import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart'
+    as _i117;
 import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
     as _i947;
 import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
@@ -95,6 +107,9 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i983.NetworkModule>(() => _i983.NetworkModule());
+    gh.factory<_i667.FavouriteDataSourceInterface>(
+      () => _i40.FavouriteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
     gh.factory<_i540.AccountRemoteDataSource>(
       () => _i280.AccountRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
@@ -111,10 +126,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
+    gh.factory<_i400.FavouriteRepository>(
+      () => _i525.FavouriteRepoImp(gh<_i667.FavouriteDataSourceInterface>()),
+    );
     gh.lazySingleton<_i103.CartRemoteDataSource>(
       () => _i912.CartRemoteDataSourceImp(
         networkModule: gh<_i983.NetworkModule>(),
       ),
+    );
+    gh.factory<_i455.GetFavouriteUseCase>(
+      () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
     );
     gh.lazySingleton<_i104.CartRepoInterface>(
       () => _i937.CartRepoImp(
@@ -126,6 +147,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i348.RegisterUseCase>(
       () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
+    );
+    gh.factory<_i117.FavouriteCubit>(
+      () => _i117.FavouriteCubit(
+        gh<_i455.GetFavouriteUseCase>(),
+        gh<InvalidType>(),
+        gh<InvalidType>(),
+      ),
     );
     gh.factory<_i293.SearchRepoInterface>(
       () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
