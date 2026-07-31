@@ -7,18 +7,19 @@ import 'package:project_graduation/core/network/api/result_api.dart';
 import 'package:project_graduation/feature/auth/data/model/login_response_dto.dart';
 import 'package:project_graduation/feature/auth/data/model/register_request_dto.dart';
 import 'package:project_graduation/feature/auth/domain/entity/login_response_entitiy.dart';
-import 'package:project_graduation/feature/auth/domain/entity/register_requiest_entitiy.dart';
+import 'package:project_graduation/feature/auth/domain/entity/register_request_entitiy.dart';
 import 'package:project_graduation/feature/auth/domain/repo/auth_data_source.dart';
 
 @Injectable(as: AuthDataSource)
 class AuthDataSourceImp implements AuthDataSource {
   @override
-  Future<ResultApi<String>> register(RegisterRequestEntity request) async {
+  Future<ResultApi<RegisterRequestEntity>> register(RegisterRequestEntity request) async {
     var requestDto = RegisterRequestDto(
       name: request.name,
       phone: request.phone,
       email: request.email,
       password: request.password,
+      confirmPassword: request.confirmPassword,
     );
     try {
       Uri url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.register}');
@@ -36,7 +37,7 @@ class AuthDataSourceImp implements AuthDataSource {
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        return Success(json != null && json['message'] != null ? json['message'].toString() : 'Success');
+        return Success(request);
       } else {
         String errorMsg = json != null && json['message'] != null
             ? json['message'].toString()

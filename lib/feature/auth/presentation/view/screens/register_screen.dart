@@ -12,7 +12,7 @@ import 'package:project_graduation/core/utils/app_dialog.dart';
 import 'package:project_graduation/core/utils/app_tost.dart';
 import 'package:project_graduation/core/utils/validator_app.dart';
 import 'package:project_graduation/core/widget/custom_text_form_field.dart';
-import 'package:project_graduation/feature/auth/domain/entity/register_requiest_entitiy.dart';
+import 'package:project_graduation/feature/auth/domain/entity/register_request_entitiy.dart';
 import 'package:project_graduation/feature/auth/presentation/view_model/cubit/register/register_cubit.dart';
 import 'package:toastification/toastification.dart';
 

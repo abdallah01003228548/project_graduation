@@ -34,11 +34,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppStrings.appName,
       theme: AppTheme.lightTheme,
-      initialRoute: token != null
-          ? AppRoutes.appSection
-          : isFirstTime
-              ? AppRoutes.onboarding
-              : AppRoutes.hello,
+      initialRoute: AppRoutes.hello,
       routes: AppRoutes.routes,
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
-import 'package:project_graduation/feature/auth/domain/entity/register_requiest_entitiy.dart';
+import 'package:project_graduation/feature/auth/domain/entity/register_request_entitiy.dart';
 import 'package:project_graduation/feature/auth/domain/use_case/register_use_case.dart';
 
 part 'register_state.dart';
@@ -24,9 +24,9 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(RegisterLoading());
     final result = await _registerUseCase.invoke(request);
     switch (result) {
-      case Success<String>():
+      case Success<RegisterRequestEntity>():
         emit(RegisterSuccess());
-      case Error<String>():
+      case Error<RegisterRequestEntity>():
         emit(RegisterError(result.messageError));
     }
   }

@@ -3,7 +3,7 @@ import 'package:project_graduation/core/constants/app_keys.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
 import 'package:project_graduation/core/storage_helper/secure_storage_helper.dart';
 import 'package:project_graduation/feature/auth/domain/entity/login_response_entitiy.dart';
-import 'package:project_graduation/feature/auth/domain/entity/register_requiest_entitiy.dart';
+import 'package:project_graduation/feature/auth/domain/entity/register_request_entitiy.dart';
 import 'package:project_graduation/feature/auth/domain/repo/auth_data_source.dart';
 import 'package:project_graduation/feature/auth/domain/repo/auth_repo_interface.dart';
 
@@ -13,7 +13,7 @@ class AuthRepoImp implements AuthRepoInterface {
   final AuthDataSource _dataSource;
   
   @override
-  Future<ResultApi<String>> register(RegisterRequestEntity request) async =>
+  Future<ResultApi<RegisterRequestEntity>> register(RegisterRequestEntity request) async =>
       await _dataSource.register(request);
        
        @override
