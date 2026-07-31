@@ -12,6 +12,36 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:project_graduation/core/di/network_module.dart' as _i983;
+import 'package:project_graduation/feature/account/data/data_source/account_remote_data_source.dart'
+    as _i540;
+import 'package:project_graduation/feature/account/data/data_source/account_remote_data_source_imp.dart'
+    as _i280;
+import 'package:project_graduation/feature/account/data/repo/account_repo_imp.dart'
+    as _i231;
+import 'package:project_graduation/feature/account/domain/repo/account_repo_interface.dart'
+    as _i895;
+import 'package:project_graduation/feature/account/domain/use_case/get_account_use_case.dart'
+    as _i274;
+import 'package:project_graduation/feature/account/domain/use_case/update_account_use_case.dart'
+    as _i165;
+import 'package:project_graduation/feature/account/presentation/view_model/account_cubit.dart'
+    as _i1066;
+import 'package:project_graduation/feature/auth/data/repo/auth_data_source_imp.dart'
+    as _i1071;
+import 'package:project_graduation/feature/auth/data/repo/auth_repo_imp.dart'
+    as _i82;
+import 'package:project_graduation/feature/auth/domain/repo/auth_data_source.dart'
+    as _i192;
+import 'package:project_graduation/feature/auth/domain/repo/auth_repo_interface.dart'
+    as _i405;
+import 'package:project_graduation/feature/auth/domain/use_case/login_use_case.dart'
+    as _i199;
+import 'package:project_graduation/feature/auth/domain/use_case/register_use_case.dart'
+    as _i348;
+import 'package:project_graduation/feature/auth/presentation/view_model/cubit/login/login_cubit.dart'
+    as _i812;
+import 'package:project_graduation/feature/auth/presentation/view_model/cubit/register/register_cubit.dart'
+    as _i60;
 import 'package:project_graduation/feature/cart/data/data_source/cart_remote_data_source.dart'
     as _i103;
 import 'package:project_graduation/feature/cart/data/data_source/cart_remote_data_source_imp.dart'
@@ -36,10 +66,6 @@ import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_
     as _i667;
 import 'package:project_graduation/feature/favourite/domain/repo/favourite_repo_interface.dart'
     as _i400;
-import 'package:project_graduation/feature/favourite/domain/use_case/add_favourite_use_case.dart'
-    as _i623;
-import 'package:project_graduation/feature/favourite/domain/use_case/delete_favourite_use_case.dart'
-    as _i92;
 import 'package:project_graduation/feature/favourite/domain/use_case/get_favourite_use_case.dart'
     as _i455;
 import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart'
@@ -84,8 +110,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i667.FavouriteDataSourceInterface>(
       () => _i40.FavouriteDataSourceImp(gh<_i983.NetworkModule>()),
     );
+    gh.factory<_i540.AccountRemoteDataSource>(
+      () => _i280.AccountRemoteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
     gh.factory<_i587.SearchRemoteDataSource>(
       () => _i803.SearchRemoteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
+    gh.factory<_i192.AuthDataSource>(() => _i1071.AuthDataSourceImp());
+    gh.factory<_i405.AuthRepoInterface>(
+      () => _i82.AuthRepoImp(gh<_i192.AuthDataSource>()),
+    );
+    gh.factory<_i895.AccountRepoInterface>(
+      () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
     );
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
@@ -98,12 +134,6 @@ extension GetItInjectableX on _i174.GetIt {
         networkModule: gh<_i983.NetworkModule>(),
       ),
     );
-    gh.factory<_i623.AddFavouriteUseCase>(
-      () => _i623.AddFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
-    gh.factory<_i92.DeleteFavouriteUseCase>(
-      () => _i92.DeleteFavouriteUseCase(gh<_i400.FavouriteRepository>()),
-    );
     gh.factory<_i455.GetFavouriteUseCase>(
       () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
     );
@@ -112,15 +142,27 @@ extension GetItInjectableX on _i174.GetIt {
         cartRemoteDataSource: gh<_i103.CartRemoteDataSource>(),
       ),
     );
+    gh.factory<_i199.LoginUseCase>(
+      () => _i199.LoginUseCase(gh<_i405.AuthRepoInterface>()),
+    );
+    gh.factory<_i348.RegisterUseCase>(
+      () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
+    );
     gh.factory<_i117.FavouriteCubit>(
       () => _i117.FavouriteCubit(
         gh<_i455.GetFavouriteUseCase>(),
-        gh<_i623.AddFavouriteUseCase>(),
-        gh<_i92.DeleteFavouriteUseCase>(),
+        gh<InvalidType>(),
+        gh<InvalidType>(),
       ),
     );
     gh.factory<_i293.SearchRepoInterface>(
       () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
+    );
+    gh.factory<_i812.LoginCubit>(
+      () => _i812.LoginCubit(gh<_i199.LoginUseCase>()),
+    );
+    gh.factory<_i60.RegisterCubit>(
+      () => _i60.RegisterCubit(gh<_i348.RegisterUseCase>()),
     );
     gh.factory<_i603.HomeRepository>(
       () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
@@ -136,11 +178,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i934.GetCartUseCase>(
       () => _i934.GetCartUseCase(gh<_i104.CartRepoInterface>()),
     );
+    gh.factory<_i274.GetAccountUseCase>(
+      () => _i274.GetAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    );
+    gh.factory<_i165.UpdateAccountUseCase>(
+      () => _i165.UpdateAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    );
     gh.factory<_i192.GetCategoriesUseCase>(
       () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
     );
     gh.factory<_i422.SearchProductsUseCase>(
       () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
+    );
+    gh.lazySingleton<_i1066.AccountCubit>(
+      () => _i1066.AccountCubit(
+        gh<_i274.GetAccountUseCase>(),
+        gh<_i165.UpdateAccountUseCase>(),
+      ),
     );
     gh.factory<_i1047.SearchCubit>(
       () => _i1047.SearchCubit(gh<_i422.SearchProductsUseCase>()),

@@ -35,8 +35,9 @@ class HelloScreen extends StatelessWidget {
               const Spacer(),
               CustomButton(
                 title: 'Signup',
+                backgroundColor: AppColors.charcoal,
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.appSection);
+                  Navigator.pushNamed(context, AppRoutes.register);
                 },
               ),
               const SizedBox(height: 12),

@@ -1,4 +1,5 @@
-import 'package:shared_preferences/shared_preferences.dart' as shared_preferences;
+import 'package:shared_preferences/shared_preferences.dart'
+    as shared_preferences;
 
 typedef SharedPreferences = shared_preferences.SharedPreferences;
 
@@ -7,7 +8,7 @@ class LocalStorageService {
 
   static const String _tokenKey = 'auth_token';
   static const String _isFirstTimeKey = 'isFirstTime';
-// onboarding
+  // onboarding
   static Future<bool> isFirstTime() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_isFirstTimeKey) ?? true;

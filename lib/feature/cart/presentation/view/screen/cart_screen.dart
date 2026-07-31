@@ -175,7 +175,7 @@ class _CheckoutSection extends StatelessWidget {
               children: [
                 const Text('Shipping fee'),
                 Text(
-                  'EGP ${shippingFee.toStringAsFixed(2)}',
+                  'USD ${shippingFee.toStringAsFixed(2)}',
                   style: AppTextStyles.bodyMedium,
                 ),
               ],
@@ -186,7 +186,7 @@ class _CheckoutSection extends StatelessWidget {
               children: [
                 const Text('Sub total'),
                 Text(
-                  'EGP ${totalPrice.toStringAsFixed(2)}',
+                  'USD ${totalPrice.toStringAsFixed(2)}',
                   style: AppTextStyles.bodyMedium,
                 ),
               ],
@@ -202,7 +202,7 @@ class _CheckoutSection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'EGP ${finalTotal.toStringAsFixed(2)}',
+                  'USD ${finalTotal.toStringAsFixed(2)}',
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

@@ -184,7 +184,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'EGP ${product.price.toStringAsFixed(2)}',
+                          'USD ${product.price.toStringAsFixed(2)}',
                           style:
                               AppTextStyles.h3Heading.copyWith(
                             color: AppColors.orangeLight,
