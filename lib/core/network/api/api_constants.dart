@@ -1,16 +1,23 @@
 class ApiConstants {
-  static const baseUrl = 'https://supermarket-dan1.onrender.com/api/v1';
-  static const register = '/auth/signUp';
-  static const login = '/auth/signIn';
-  static const productsFilter = '/home/productsFilter';
-  static const getProfile    = '/portfoilo/userData';
-  static const updateProfile = '/portfoilo/editUserData';
-  static const addImage       = '/portfoilo/addImage';
-  static const getCart = '/user/getCart';
-  static const addCart = '/user/addCart';
-  static const deleteCart = '/user/deleteCart';
+  static const String serverUrl =
+      'https://supermarket-dan1.onrender.com';
 
-  // Favourite
+  static const String baseUrl ='$serverUrl/api/v1';
+
+  static const String register = '/auth/signUp';
+  static const String login = '/auth/signIn';
+
+  static const String productsFilter =
+      '/home/productsFilter';
+
+  static const String getProfile ='/portfoilo/userData';
+  static const String updateProfile ='/portfoilo/editUserData';
+  static const String addImage ='/portfoilo/addImage';
+
+  static const String getCart ='/user/getCart';
+  static const String addCart ='/user/addCart';
+  static const String deleteCart ='/user/deleteCart';
+
   static const getFavourite = '/user/getFavorite';
   static const addFavourite = '/user/addFavorite';
   static const deleteFavourite = '/user/deleteFavorite';

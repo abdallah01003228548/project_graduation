@@ -61,7 +61,7 @@ class CartItemWidget extends StatelessWidget {
                   const Spacer(),
 
                   Text(
-                    'EGP ${item.unitPrice.toStringAsFixed(2)}',
+                    'USD ${item.unitPrice.toStringAsFixed(2)}',
                     style: AppTextStyles.bodyMedium
                   ),
                 ],

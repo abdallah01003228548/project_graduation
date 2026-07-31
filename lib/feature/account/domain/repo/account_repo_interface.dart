@@ -12,5 +12,5 @@ abstract interface class AccountRepoInterface {
     String? password,
     File? imageFile,
   });
-  Future<ResultApi<void>> uploadImage(File imageFile);
+  Future<ResultApi<void>> addImage(File imageFile);
 }

@@ -68,7 +68,6 @@ class AccountCubit extends Cubit<AccountState> {
     );
 
     if (result is Success<void>) {
-      selectedImageFile = null;
       await getProfile();
       if (state is AccountLoaded) {
         emit(AccountUpdateSuccess((state as AccountLoaded).account));
