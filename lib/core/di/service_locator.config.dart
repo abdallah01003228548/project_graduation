@@ -66,10 +66,16 @@ import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_
     as _i667;
 import 'package:project_graduation/feature/favourite/domain/repo/favourite_repo_interface.dart'
     as _i400;
+import 'package:project_graduation/feature/favourite/domain/use_case/add_favourite_use_case.dart'
+    as _i623;
+import 'package:project_graduation/feature/favourite/domain/use_case/delete_favourite_use_case.dart'
+    as _i92;
 import 'package:project_graduation/feature/favourite/domain/use_case/get_favourite_use_case.dart'
     as _i455;
 import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart'
     as _i117;
+import 'package:project_graduation/feature/home/data/data_source/home_remote_data_source.dart'
+    as _i214;
 import 'package:project_graduation/feature/home/data/models/data_source/home_remote_data_source_imp.dart'
     as _i947;
 import 'package:project_graduation/feature/home/data/repo/home_repo_imp.dart'
@@ -110,18 +116,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i667.FavouriteDataSourceInterface>(
       () => _i40.FavouriteDataSourceImp(gh<_i983.NetworkModule>()),
     );
-    gh.factory<_i540.AccountRemoteDataSource>(
-      () => _i280.AccountRemoteDataSourceImp(gh<_i983.NetworkModule>()),
-    );
     gh.factory<_i587.SearchRemoteDataSource>(
       () => _i803.SearchRemoteDataSourceImp(gh<_i983.NetworkModule>()),
     );
     gh.factory<_i192.AuthDataSource>(() => _i1071.AuthDataSourceImp());
     gh.factory<_i405.AuthRepoInterface>(
       () => _i82.AuthRepoImp(gh<_i192.AuthDataSource>()),
-    );
-    gh.factory<_i895.AccountRepoInterface>(
-      () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
     );
     gh.factory<_i947.HomeRemoteDataSource>(
       () => _i947.HomeRemoteDataSourceImp(gh<_i983.NetworkModule>()),
@@ -134,6 +134,12 @@ extension GetItInjectableX on _i174.GetIt {
         networkModule: gh<_i983.NetworkModule>(),
       ),
     );
+    gh.factory<_i623.AddFavouriteUseCase>(
+      () => _i623.AddFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
+    gh.factory<_i92.DeleteFavouriteUseCase>(
+      () => _i92.DeleteFavouriteUseCase(gh<_i400.FavouriteRepository>()),
+    );
     gh.factory<_i455.GetFavouriteUseCase>(
       () => _i455.GetFavouriteUseCase(gh<_i400.FavouriteRepository>()),
     );
@@ -142,18 +148,18 @@ extension GetItInjectableX on _i174.GetIt {
         cartRemoteDataSource: gh<_i103.CartRemoteDataSource>(),
       ),
     );
+    gh.factory<_i117.FavouriteCubit>(
+      () => _i117.FavouriteCubit(
+        gh<_i455.GetFavouriteUseCase>(),
+        gh<_i623.AddFavouriteUseCase>(),
+        gh<_i92.DeleteFavouriteUseCase>(),
+      ),
+    );
     gh.factory<_i199.LoginUseCase>(
       () => _i199.LoginUseCase(gh<_i405.AuthRepoInterface>()),
     );
     gh.factory<_i348.RegisterUseCase>(
       () => _i348.RegisterUseCase(gh<_i405.AuthRepoInterface>()),
-    );
-    gh.factory<_i117.FavouriteCubit>(
-      () => _i117.FavouriteCubit(
-        gh<_i455.GetFavouriteUseCase>(),
-        gh<InvalidType>(),
-        gh<InvalidType>(),
-      ),
     );
     gh.factory<_i293.SearchRepoInterface>(
       () => _i545.SearchRepoImp(gh<_i587.SearchRemoteDataSource>()),
@@ -161,15 +167,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i812.LoginCubit>(
       () => _i812.LoginCubit(gh<_i199.LoginUseCase>()),
     );
+    gh.factory<_i603.HomeRepository>(
+      () => _i1009.HomeRepoImp(gh<_i214.HomeRemoteDataSource>()),
+    );
     gh.factory<_i60.RegisterCubit>(
       () => _i60.RegisterCubit(gh<_i348.RegisterUseCase>()),
     );
-    gh.factory<_i603.HomeRepository>(
-      () => _i1009.HomeRepoImp(gh<_i947.HomeRemoteDataSource>()),
+    gh.factory<_i540.AccountRemoteDataSource>(
+      () => _i280.AccountRemoteDataSourceImp(gh<_i983.NetworkModule>()),
+    );
+    gh.factory<_i313.GetProductsUseCase>(
+      () => _i313.GetProductsUseCase(gh<_i603.HomeRepository>()),
+    );
+    gh.factory<_i551.GetProductsByCategoryUseCase>(
+      () => _i551.GetProductsByCategoryUseCase(gh<_i603.HomeRepository>()),
     );
     gh.factory<_i799.AddCartUseCase>(
       () => _i799.AddCartUseCase(
         cartRepoInterface: gh<_i104.CartRepoInterface>(),
+      ),
+    );
+    gh.factory<_i72.ProductsByCategoryCubit>(
+      () => _i72.ProductsByCategoryCubit(
+        gh<_i551.GetProductsByCategoryUseCase>(),
       ),
     );
     gh.factory<_i772.DeleteCartUseCase>(
@@ -178,23 +198,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i934.GetCartUseCase>(
       () => _i934.GetCartUseCase(gh<_i104.CartRepoInterface>()),
     );
-    gh.factory<_i274.GetAccountUseCase>(
-      () => _i274.GetAccountUseCase(gh<_i895.AccountRepoInterface>()),
-    );
-    gh.factory<_i165.UpdateAccountUseCase>(
-      () => _i165.UpdateAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    gh.factory<_i895.AccountRepoInterface>(
+      () => _i231.AccountRepoImp(gh<_i540.AccountRemoteDataSource>()),
     );
     gh.factory<_i192.GetCategoriesUseCase>(
       () => _i192.GetCategoriesUseCase(gh<_i603.HomeRepository>()),
     );
     gh.factory<_i422.SearchProductsUseCase>(
       () => _i422.SearchProductsUseCase(gh<_i293.SearchRepoInterface>()),
-    );
-    gh.lazySingleton<_i1066.AccountCubit>(
-      () => _i1066.AccountCubit(
-        gh<_i274.GetAccountUseCase>(),
-        gh<_i165.UpdateAccountUseCase>(),
-      ),
     );
     gh.factory<_i1047.SearchCubit>(
       () => _i1047.SearchCubit(gh<_i422.SearchProductsUseCase>()),
@@ -206,21 +217,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i772.DeleteCartUseCase>(),
       ),
     );
-    gh.factory<_i313.GetProductsUseCase>(
-      () => _i313.GetProductsUseCase(gh<_i603.HomeRepository>()),
-    );
-    gh.factory<_i551.GetProductsByCategoryUseCase>(
-      () => _i551.GetProductsByCategoryUseCase(gh<_i603.HomeRepository>()),
-    );
     gh.factory<_i1002.HomeCubit>(
       () => _i1002.HomeCubit(
         gh<_i192.GetCategoriesUseCase>(),
         gh<_i313.GetProductsUseCase>(),
       ),
     );
-    gh.factory<_i72.ProductsByCategoryCubit>(
-      () => _i72.ProductsByCategoryCubit(
-        gh<_i551.GetProductsByCategoryUseCase>(),
+    gh.factory<_i274.GetAccountUseCase>(
+      () => _i274.GetAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    );
+    gh.factory<_i165.UpdateAccountUseCase>(
+      () => _i165.UpdateAccountUseCase(gh<_i895.AccountRepoInterface>()),
+    );
+    gh.lazySingleton<_i1066.AccountCubit>(
+      () => _i1066.AccountCubit(
+        gh<_i274.GetAccountUseCase>(),
+        gh<_i165.UpdateAccountUseCase>(),
       ),
     );
     return this;

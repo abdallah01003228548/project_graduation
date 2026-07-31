@@ -158,7 +158,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               page.subtitle,
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.charcoal.withOpacity(0.75),
+                color: AppColors.charcoal.withValues(alpha: 0.75),
                 fontSize: 20,
                 height: 1.5,
               ),
@@ -185,7 +185,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           width: 15,
           height: 15,
           decoration: BoxDecoration(
-            color: isActive ? AppColors.charcoal : AppColors.charcoal.withOpacity(0.25),
+            color: isActive ? AppColors.charcoal : AppColors.charcoal.withValues(alpha: 0.25),
             shape: BoxShape.circle,
           ),
         );

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:project_graduation/core/network/api/api_constants.dart';
 import 'package:project_graduation/core/di/network_module.dart';
+import 'package:project_graduation/core/network/api/api_constants.dart';
 import 'package:project_graduation/core/network/api/result_api.dart';
 import 'package:project_graduation/feature/favourite/data/model/favourite_dto.dart';
 import 'package:project_graduation/feature/favourite/domain/repo/favourite_data_source_interface.dart';
@@ -19,14 +19,25 @@ class FavouriteDataSourceImp implements FavouriteDataSourceInterface {
         ApiConstants.getFavourite,
       );
 
-      final favouriteDto = FavouriteDto.fromJson(response.data);
+      final responseData = response.data;
+
+      if (responseData is! Map) {
+        return Error(
+          'Invalid favourite response: ${responseData.toString()}',
+        );
+      }
+
+      final data = Map<String, dynamic>.from(responseData);
+
+      final favouriteDto = FavouriteDto.fromJson(data);
 
       return Success(favouriteDto);
     } on DioException catch (e) {
       return Error(
-        e.response?.data?['message']?.toString() ??
-            e.message ??
-            'Failed to fetch favourite products',
+        _extractDioError(
+          e,
+          fallback: 'Failed to fetch favourite products',
+        ),
       );
     } catch (e) {
       return Error(e.toString());
@@ -44,15 +55,17 @@ class FavouriteDataSourceImp implements FavouriteDataSourceInterface {
       );
 
       return Success(
-        response.data is Map<String, dynamic>
-            ? (response.data['message']?.toString() ?? 'Success')
-            : response.data.toString(),
+        _extractSuccessMessage(
+          response.data,
+          fallback: 'Product added to favourites',
+        ),
       );
     } on DioException catch (e) {
       return Error(
-        e.response?.data?['message']?.toString() ??
-            e.message ??
-            'Failed to add favourite',
+        _extractDioError(
+          e,
+          fallback: 'Failed to add favourite',
+        ),
       );
     } catch (e) {
       return Error(e.toString());
@@ -70,18 +83,82 @@ class FavouriteDataSourceImp implements FavouriteDataSourceInterface {
       );
 
       return Success(
-        response.data is Map<String, dynamic>
-            ? (response.data['message']?.toString() ?? 'Success')
-            : response.data.toString(),
+        _extractSuccessMessage(
+          response.data,
+          fallback: 'Product removed from favourites',
+        ),
       );
     } on DioException catch (e) {
       return Error(
-        e.response?.data?['message']?.toString() ??
-            e.message ??
-            'Failed to delete favourite',
+        _extractDioError(
+          e,
+          fallback: 'Failed to delete favourite',
+        ),
       );
     } catch (e) {
       return Error(e.toString());
     }
+  }
+
+  String _extractSuccessMessage(
+    dynamic responseData, {
+    required String fallback,
+  }) {
+    if (responseData is Map) {
+      final data = Map<String, dynamic>.from(responseData);
+
+      final message = data['message'];
+
+      if (message is String && message.isNotEmpty) {
+        return message;
+      }
+
+      if (message != null) {
+        return message.toString();
+      }
+    }
+
+    if (responseData is String && responseData.isNotEmpty) {
+      return responseData;
+    }
+
+    return fallback;
+  }
+
+  String _extractDioError(
+    DioException exception, {
+    required String fallback,
+  }) {
+    final responseData = exception.response?.data;
+
+    // Backend returned JSON object
+    if (responseData is Map) {
+      final data = Map<String, dynamic>.from(responseData);
+
+      final message = data['message'];
+
+      if (message != null && message.toString().isNotEmpty) {
+        return message.toString();
+      }
+
+      final error = data['error'];
+
+      if (error != null && error.toString().isNotEmpty) {
+        return error.toString();
+      }
+    }
+
+    // Backend returned plain text / HTML
+    if (responseData is String && responseData.isNotEmpty) {
+      return responseData;
+    }
+
+    final dioMessage = exception.message;
+
+    if (dioMessage != null && dioMessage.isNotEmpty) {
+      return dioMessage;
+    }
+
+    return fallback;
   }
 }

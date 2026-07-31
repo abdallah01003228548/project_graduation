@@ -47,7 +47,7 @@ class ProductItemCard extends StatelessWidget {
                     child: Image.network(
                       item.thumbnail,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (_, _, _) => Container(
                         color: AppColors.white,
                         child: const Icon(Icons.image_not_supported_outlined),
                       ),

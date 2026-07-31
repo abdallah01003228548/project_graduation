@@ -21,7 +21,6 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
         ApiConstants.getProfile,
         
       );
-      print('Response data: ${response.data}'); // Debugging line
       final data = response.data;
       
 

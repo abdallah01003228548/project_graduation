@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_graduation/core/model/widget/product_item_card.dart';
+import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart';
 import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart';
+import 'package:project_graduation/feature/product_details/presentation/view/screens/product_details_screen.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
@@ -22,7 +24,6 @@ class FavouriteView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('My Favourite'),
         centerTitle: true,
-        leading: const BackButton(),
       ),
       body: BlocConsumer<FavouriteCubit, FavouriteState>(
         listener: (context, state) {
@@ -88,6 +89,20 @@ class FavouriteView extends StatelessWidget {
                 return ProductItemCard(
                   item: product,
                   isFavorite: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<CartCubit>(),
+                          child: BlocProvider.value(
+                            value: context.read<FavouriteCubit>(),
+                            child: ProductDetailsScreen(product: product),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                   onFavoriteTap: () async {
                     final cubit = context.read<FavouriteCubit>();
                     final result = await cubit.toggleFavourite(product);

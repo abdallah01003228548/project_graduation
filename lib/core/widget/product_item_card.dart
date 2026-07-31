@@ -28,7 +28,7 @@ class ProductItemCard extends StatelessWidget {
             child: Image.network(
               product.thumbnail,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
+              errorBuilder: (_, _, _) => Container(
                 color: AppColors.borderItemBackground,
                 alignment: Alignment.center,
                 child: const Icon(Icons.image_not_supported_outlined),

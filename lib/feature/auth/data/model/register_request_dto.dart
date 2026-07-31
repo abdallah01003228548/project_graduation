@@ -9,11 +9,11 @@ class RegisterRequestDto {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['name'] = this.name;
-    data['phone'] = this.phone;
-    data['email'] = this.email;
-    data['password'] = this.password;
-    data['confirmPassword'] = this.confirmPassword;
+    data['name'] = name;
+    data['phone'] = phone;
+    data['email'] = email;
+    data['password'] = password;
+    data['confirmPassword'] = confirmPassword;
     return data;
   }
 }

@@ -23,7 +23,6 @@ class FavouriteCubit extends Cubit<FavouriteState> {
 
   List<ProductItemEntity> _products = [];
 
-  /// بدل الـ Set القديم: بنحسب الـ IDs من الـ List نفسها كل مرة (مفيش تزامن يدوي)
   Set<String> get favouriteIds => _products.map((p) => p.id).toSet();
 
   bool isFavourite(String productId) {
@@ -48,7 +47,6 @@ class FavouriteCubit extends Cubit<FavouriteState> {
     }
   }
 
-  /// بيرجع true لو "اتضاف"، false لو "اتشال"، null لو فشل
   Future<bool?> toggleFavourite(ProductItemEntity product) async {
     if (isFavourite(product.id)) {
       final success = await removeFavourite(product);

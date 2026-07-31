@@ -4,6 +4,7 @@ import 'package:project_graduation/core/di/service_locator.dart';
 import 'package:project_graduation/core/model/widget/product_item_card.dart';
 import 'package:project_graduation/core/theme/custom_text_field.dart';
 import 'package:project_graduation/feature/cart/presentation/view_model/cart/cart_cubit.dart';
+import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart';
 import 'package:project_graduation/feature/product_details/presentation/view/screens/product_details_screen.dart';
 import 'package:project_graduation/feature/search/presentation/view_model/search_cubit.dart';
 import 'package:project_graduation/feature/search/presentation/view_model/search_state.dart';
@@ -67,7 +68,9 @@ class _SearchBody extends StatelessWidget {
                   ),
 
                 SearchError() => const Center(
-                    child: Text('Something went wrong while searching'),
+                    child: Text(
+                      'Something went wrong while searching',
+                    ),
                   ),
 
                 SearchSuccess() => GridView.builder(
@@ -88,21 +91,31 @@ class _SearchBody extends StatelessWidget {
                         isFavorite: false,
                         onFavoriteTap: () {},
                         onTap: () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                           builder: (_) => BlocProvider.value(
-                            value: serviceLocator<CartCubit>(),
-                            child: ProductDetailsScreen(
-                            product: product,
-                           ),
-                         ),
-                       ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider<CartCubit>(
+                                    create: (_) =>
+                                        serviceLocator<CartCubit>(),
+                                  ),
+                                  BlocProvider<FavouriteCubit>(
+                                    create: (_) =>
+                                        serviceLocator<FavouriteCubit>()
+                                          ..getFavouriteProducts(),
+                                  ),
+                                ],
+                                child: ProductDetailsScreen(
+                                  product: product,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
-                   );
-                  },
-                 ),
+                  ),
               };
             },
           ),

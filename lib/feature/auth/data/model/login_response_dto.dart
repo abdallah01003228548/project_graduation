@@ -10,7 +10,7 @@ class LoginResponseDto {
   LoginResponseDto.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     token = json['token'];
-    user = json['user'] != null ? new AppUserDto.fromJson(json['user']) : null;
+    user = json['user'] != null ? AppUserDto.fromJson(json['user']) : null;
   }
 
 

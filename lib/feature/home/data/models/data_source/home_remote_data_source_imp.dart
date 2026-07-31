@@ -50,7 +50,9 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
   @override
   Future<ResultApi<List<CategoryItemDto>>> getCategories() async {
     try {
-      final response = await networkModule.get('/home/categories');
+      final response = await networkModule.get(
+        '/home/categories',
+      );
 
       final List<dynamic> list = response.data['list'];
 
@@ -65,7 +67,7 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
       return Success(categories);
     } on DioException catch (e) {
       return Error(
-        e.response?.data?['message'] ?? e.message ?? 'Failed to fetch categories',
+        e.response?.data['message'] ?? e.message ?? 'Failed to fetch categories',
       );
     } catch (e) {
       return Error(e.toString());

@@ -9,6 +9,7 @@ import 'package:project_graduation/feature/home/presentation/view/widget/home_gr
 import 'package:project_graduation/feature/home/presentation/view/widget/home_product_grid_widget.dart';
 import 'package:project_graduation/feature/home/presentation/view_model/home/home_cubit.dart';
 import 'package:project_graduation/feature/favourite/presentation/view_model/favourite_cubit.dart';
+import 'package:project_graduation/feature/search/presentation/view/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,10 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final categoryNames = <CategoryEntity>[
       CategoryEntity(name: 'All', slug: '', image: ''),
       ...state.categories
-          .map((c) => c is CategoryEntity
-          ? c as CategoryEntity
-          : CategoryEntity(name: c.toString(), slug: '', image: ''))
-          .toList(),
+          .map((name) => CategoryEntity(name: name, slug: '', image: ''))
+          ,
     ];
     final selectedCategory = categoryNames.any(
           (category) => category.name == _selectedCategory,
@@ -75,7 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                const HomeGreetingHeader(),
+                HomeGreetingHeader(
+                  onSearchPressed: () => SearchScreen.show(context),
+                ),
                 const SizedBox(height: 20),
                 HomeCategoryTabs(
                   categories: categoryNames,

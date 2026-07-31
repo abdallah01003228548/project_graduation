@@ -77,6 +77,19 @@ class CartRemoteDataSourceImp implements CartRemoteDataSource {
       return 'Cart service is unavailable right now. Please try again later.';
     }
 
-    return exception.response?.data?['message'] ?? fallback;
+    final responseData = exception.response?.data;
+
+    if (responseData is Map<String, dynamic>) {
+      final message = responseData['message']?.toString();
+      if (message != null && message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    if (responseData is String && responseData.trim().isNotEmpty) {
+      return responseData;
+    }
+
+    return fallback;
   }
 }
