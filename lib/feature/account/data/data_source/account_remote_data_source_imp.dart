@@ -71,7 +71,7 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
         data: formData,
       );
 
-      return const Success(null);
+      return  Success(null);
     } on DioException catch (e) {
       return Error(
         e.response?.data?['message']?.toString() ??
@@ -100,7 +100,7 @@ class AccountRemoteDataSourceImp implements AccountRemoteDataSource {
         data: formData,
       );
 
-      return const Success(null);
+      return  Success(null);
     } on DioException catch (e) {
       return Error(
         e.response?.data?['message']?.toString() ??

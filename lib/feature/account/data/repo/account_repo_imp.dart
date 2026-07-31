@@ -46,7 +46,7 @@ class AccountRepoImp implements AccountRepoInterface {
     );
 
     if (result is Success<void>) {
-      return const Success(null);
+      return  Success(null);
     }
 
     if (result is Error<void>) {
@@ -61,7 +61,7 @@ class AccountRepoImp implements AccountRepoInterface {
     final result = await _remoteDataSource.uploadImage(imageFile);
 
     if (result is Success<void>) {
-      return const Success(null);
+      return  Success(null);
     }
 
     if (result is Error<void>) {
